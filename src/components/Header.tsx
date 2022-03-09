@@ -7,7 +7,7 @@ export default function Header(props: { title: string }) {
       <img
         src={logo}
         style={{ animation: "spin 3s linear infinite" }}
-        className="h-16 w-16"
+        className="animate-spin h-16 w-16"
         alt="logo"
       />
       <h1 className="text-center text-xl">{props.title}</h1>
