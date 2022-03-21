@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 interface FormInputProps {
   type: string;
@@ -18,10 +18,21 @@ export default function FormInput(props: FormInputProps) {
       <input
         type={props.type}
         className="py-2 px-4 border border-sky-200 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded-lg w-[90%] text-sky-800 transition duration-200 ease-in-out"
-        name={props.name} value={props.value} onChange={(e) => props.setValueCB(props.id,e.target.value)}
+        name={props.name}
+        value={props.value}
+        onChange={(e) => props.setValueCB(props.id, e.target.value)}
       />
-    <button onClick={() => {props.deleteFieldCB(props.id)}} className="absolute inset-y-0 mt-6 right-0 flex items-center px-4 ">
-        <svg className="h-5 w-5 text-red-500" viewBox="0 0 20 20" fill="currentColor">
+      <button
+        onClick={() => {
+          props.deleteFieldCB(props.id);
+        }}
+        className="absolute inset-y-0 mt-6 right-0 flex items-center px-4 "
+      >
+        <svg
+          className="h-5 w-5 text-red-500"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+        >
           <path
             fillRule="evenodd"
             d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"

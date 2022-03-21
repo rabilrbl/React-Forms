@@ -11,7 +11,6 @@ const defaultFields = [
     type: "text",
     placeholder: "Enter your first name",
     value: "",
-
   },
   {
     id: 2,
@@ -66,7 +65,10 @@ export default function Form(props: {
     );
   };
   const addField = (name: string, label: string, type: string = "text") => {
-    setFormFields([...formFields, { id: Math.random(), name, label, type, value: "" }]);
+    setFormFields([
+      ...formFields,
+      { id: Math.random(), name, label, type, value: "" },
+    ]);
   };
 
   const deleteField = (id: number) => {
