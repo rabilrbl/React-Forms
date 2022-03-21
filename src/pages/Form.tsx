@@ -10,6 +10,8 @@ const defaultFields = [
     label: "First Name",
     type: "text",
     placeholder: "Enter your first name",
+    value: "",
+
   },
   {
     id: 2,
@@ -17,6 +19,7 @@ const defaultFields = [
     label: "Last Name",
     type: "text",
     placeholder: "Enter your last name",
+    value: "",
   },
   {
     id: 3,
@@ -24,6 +27,7 @@ const defaultFields = [
     label: "Email",
     type: "email",
     placeholder: "Enter your email",
+    value: "",
   },
   {
     id: 4,
@@ -31,12 +35,14 @@ const defaultFields = [
     label: "Phone Number",
     type: "tel",
     placeholder: "Enter your phone number",
+    value: "",
   },
   {
     id: 5,
     name: "dateOfBirth",
     label: "Date Of Birth",
     type: "date",
+    value: "",
   },
 ];
 
@@ -49,8 +55,18 @@ export default function Form(props: {
   const [fieldName, setFieldName] = React.useState("");
   const [showAddForm, setShowAddForm] = React.useState(false);
   const [fieldType, setFieldType] = React.useState("text");
+  const setValue = (id: number, value: string) => {
+    setFormFields(
+      formFields.map((field) => {
+        if (field.id === id) {
+          field.value = value;
+        }
+        return field;
+      })
+    );
+  };
   const addField = (name: string, label: string, type: string = "text") => {
-    setFormFields([...formFields, { id: Math.random(), name, label, type }]);
+    setFormFields([...formFields, { id: Math.random(), name, label, type, value: "" }]);
   };
 
   const deleteField = (id: number) => {
@@ -66,7 +82,9 @@ export default function Form(props: {
           type={field.type}
           name={field.name}
           label={field.label}
+          value={field.value}
           deleteFieldCB={deleteField}
+          setValueCB={setValue}
         />
       ))}
 
