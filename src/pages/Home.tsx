@@ -34,7 +34,7 @@ export default function Home(props: {
     <div className="border px-2 py-1 rounded">
       <Header title="Form builder!" />
       <p>Available Forms</p>
-      {forms ? (
+      {forms.length > 0 ? (
         forms.map((form, index) => {
           return (
             <div
@@ -69,7 +69,7 @@ export default function Home(props: {
           );
         })
       ) : (
-        <p>No Forms Available</p>
+        <h3>No Forms Available</h3>
       )}
       <Button
         color="bg-sky-500"
