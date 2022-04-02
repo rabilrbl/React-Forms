@@ -7,6 +7,7 @@ import Home from "./pages/Home";
 
 function App() {
   const [showForm, setShowForm] = useState(false);
+  const [formId, setFormId] = useState(0);
   const toggleForm = () => {
     setShowForm(!showForm);
   };
@@ -16,9 +17,9 @@ function App() {
       <AppContainer>
         <Block>
           {showForm ? (
-            <Form action="" method="" fillFormCB={toggleForm} />
+            <Form action="" id={formId} method="" fillFormCB={toggleForm} />
           ) : (
-            <Home fillFormCB={toggleForm} />
+            <Home fillFormCB={toggleForm} setFormIdCB={setFormId} />
           )}
         </Block>
       </AppContainer>

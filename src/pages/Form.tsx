@@ -18,7 +18,7 @@ interface formFieldsType {
   value: string;
 }
 
-const defaultFields: formFieldsType[] = [
+export const defaultFields: formFieldsType[] = [
   {
     id: 1,
     name: "firstName",
@@ -56,28 +56,47 @@ const defaultFields: formFieldsType[] = [
   },
 ];
 
-const getLocalFields = (): formDataType => {
-  const data = localStorage.getItem("formData");
-  const localFields = data
-    ? JSON.parse(data)
-    : {
-        id: Math.floor(Math.random() * 1000),
-        title: "Untitled Form",
-        fields: defaultFields,
-      };
-  return localFields;
+export const getLocalForms = (): formDataType[] => {
+  const localForms = localStorage.getItem("forms");
+  if (localForms) {
+    return JSON.parse(localForms);
+  }
+  return [];
+};
+
+const getLocalFields = (id: number): formDataType => {
+  const localForms = getLocalForms();
+  if (localForms.length > 0) {
+    return localForms[id]
+  }
+  const newForms = {
+    id: Math.floor(Math.random() * 1000),
+    title: "Untitled Form",
+    fields: defaultFields,
+  };
+  saveLocalForms([...localForms, newForms]);
+  return newForms;
+};
+
+export const saveLocalForms = (formData: formDataType[]): void => {
+  localStorage.setItem("forms", JSON.stringify(formData));
 };
 
 const setLocalFields = (formData: formDataType): void => {
-  localStorage.setItem("formData", JSON.stringify(formData));
+  const localForms = getLocalForms();
+  const updatedForms = localForms.map((form) =>
+    form.id === formData.id ? formData : form
+  );
+  saveLocalForms(updatedForms);
 };
 
 export default function Form(props: {
   action: string;
   method: string;
+  id: number;
   fillFormCB: () => void;
 }) {
-  const [formData, setFormData] = React.useState(getLocalFields());
+  const [formData, setFormData] = React.useState(() => getLocalFields(props.id));
   const [fieldName, setFieldName] = React.useState("");
   const [showAddForm, setShowAddForm] = React.useState(false);
   const [fieldType, setFieldType] = React.useState("text");
