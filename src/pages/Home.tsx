@@ -19,7 +19,7 @@ export default function Home() {
       fields: defaultFields,
     };
     setForms([...forms, newForm]);
-    document.location.href = (`/form/${newForm.id}`);
+    document.location.href = `/form/${newForm.id}`;
   };
 
   useEffect(() => {

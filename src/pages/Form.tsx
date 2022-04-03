@@ -94,7 +94,9 @@ export default function Form(props: {
   method: string;
   id: number;
 }) {
-  const [formData, setFormData] = React.useState(() => getLocalFields(props.id));
+  const [formData, setFormData] = React.useState(() =>
+    getLocalFields(props.id)
+  );
   const [fieldName, setFieldName] = React.useState("");
   const [showAddForm, setShowAddForm] = React.useState(false);
   const [fieldType, setFieldType] = React.useState("text");
