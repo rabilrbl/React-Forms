@@ -3,6 +3,7 @@ import Header from "../components/Header";
 import FormInput from "../components/FormInput";
 import Button from "../components/Button";
 import AddFormField from "../components/AddFormField";
+import { Link, navigate } from "raviger";
 
 interface formDataType {
   id: number;
@@ -66,16 +67,14 @@ export const getLocalForms = (): formDataType[] => {
 
 const getLocalFields = (id: number): formDataType => {
   const localForms = getLocalForms();
-  if (localForms.length > 0) {
-    return localForms[id];
+  const form = localForms.find((form) => form.id === id);
+  if (form && form.fields.length > 0) {
+    console.log("Found form", form, Date.now());
+    return form;
   }
-  const newForms = {
-    id: Math.floor(Math.random() * 1000),
-    title: "Untitled Form",
-    fields: defaultFields,
-  };
-  saveLocalForms([...localForms, newForms]);
-  return newForms;
+  alert("No form found with id " + id);
+  navigate("/");
+  return { id: 0, title: "", fields: [] };
 };
 
 export const saveLocalForms = (formData: formDataType[]): void => {
@@ -94,11 +93,8 @@ export default function Form(props: {
   action: string;
   method: string;
   id: number;
-  fillFormCB: () => void;
 }) {
-  const [formData, setFormData] = React.useState(() =>
-    getLocalFields(props.id)
-  );
+  const [formData, setFormData] = React.useState(() => getLocalFields(props.id));
   const [fieldName, setFieldName] = React.useState("");
   const [showAddForm, setShowAddForm] = React.useState(false);
   const [fieldType, setFieldType] = React.useState("text");
@@ -245,7 +241,9 @@ export default function Form(props: {
           text="Save"
           onClick={() => setLocalFields(formData)}
         />
-        <Button color="bg-sky-600" text="Close" onClick={props.fillFormCB} />
+        <Link className="bg-red-500 px-4 py-2 rounded-lg text-white " href="/">
+          Close
+        </Link>
       </div>
     </>
   );

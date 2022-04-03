@@ -1,7 +1,7 @@
 export default function Button(props: {
   color: string;
   text: string;
-  onClick?: () => void;
+  onClick?: (e: any) => void;
   hoverColor?: string;
   id?: string;
   size?: string;

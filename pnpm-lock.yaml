@@ -10,6 +10,7 @@ specifiers:
   '@types/react-dom': ^17.0.13
   autoprefixer: ^10.4.2
   postcss: ^8.4.7
+  raviger: ^4.0.0
   react: ^17.0.2
   react-dom: ^17.0.2
   react-scripts: 5.0.0
@@ -27,6 +28,7 @@ dependencies:
   '@types/react-dom': 17.0.13
   autoprefixer: 10.4.2_postcss@8.4.7
   postcss: 8.4.7
+  raviger: 4.0.0_react@17.0.2
   react: 17.0.2
   react-dom: 17.0.2_react@17.0.2
   react-scripts: 5.0.0_d6d4be9bc5e21444469c50dac1badcb4
@@ -7703,6 +7705,15 @@ packages:
   /range-parser/1.2.1:
     resolution: {integrity: sha512-Hrgsx+orqoygnmhFbKaHE6c296J+HTAQXoxEF6gNupROmmGJRoyzfG3ccAveqCBrwr/2yxQ5BVd/GTl5agOwSg==}
     engines: {node: '>= 0.6'}
+    dev: false
+
+  /raviger/4.0.0_react@17.0.2:
+    resolution: {integrity: sha512-3r8Yoc+qN8aImO5JRVAOjI2TCQ0hybl88dpblYrJ5DpemEwg2guws5UxN7jIotxdOYooeTJC9KERJB1SRsxbww==}
+    engines: {node: '>=12'}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0
+    dependencies:
+      react: 17.0.2
     dev: false
 
   /raw-body/2.4.3:
