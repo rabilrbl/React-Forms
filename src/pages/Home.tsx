@@ -83,13 +83,13 @@ export default function Home() {
           .map((form, index) => {
             return (
               <div
-                className="flex flex-row items-center border-2 px-2 my-2 rounded-lg drop-shadow-lg"
+                className="flex flex-row items-center border-2 px-4 py-2 my-3 rounded-lg shadow-lg"
                 key={form.id}
               >
                 <strong>
                   {index + 1}. {form.title}
                 </strong>
-                <div className="ml-auto">
+                <div className="ml-auto order-1 mr-2 space-x-5">
                   {/* <Button
                   color="bg-blue-500"
                   text="Open"
@@ -99,21 +99,72 @@ export default function Home() {
                   hoverColor="bg-red-800"
                   size="px-2 py-1"
                 /> */}
-                  <Link
-                    className="bg-blue-500 px-2 py-1 rounded-lg text-white "
-                    href={`/form/${form.id}`}
-                  >
-                    Open
+                  <Link className="" href={`/form/${form.id}`}>
+                    <button
+                      className="bg-blue-600 text-blue-50 p-1 rounded-lg shadow-lg"
+                      title="Open Form"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-6 w-6"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                        />
+                      </svg>
+                    </button>
                   </Link>
-                  <Button
-                    color="bg-red-500"
-                    text="Delete"
+
+                  <Link className="" href={`/preview/${form.id}/0`}>
+                    <button
+                      className="bg-indigo-600 text-blue-50 p-1 rounded-lg shadow-lg"
+                      title="Preview"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-6 w-6"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"
+                        />
+                      </svg>
+                    </button>
+                  </Link>
+
+                  <button
+                    className="bg-red-600 p-1 rounded-lg shadow-lg"
+                    title="Delete"
                     onClick={() => {
                       deleteForm(form.id);
                     }}
-                    hoverColor="bg-red-800"
-                    size="px-2 py-1"
-                  />
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-6 w-6 text-blue-50"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                      />
+                    </svg>
+                  </button>
                 </div>
               </div>
             );

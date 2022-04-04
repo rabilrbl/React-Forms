@@ -5,11 +5,11 @@ export default function addFormField(props: {
     setFieldTypeCB: (fieldType: string) => void,
 }){
     return (
-        <>
+        <div className="flex w-full my-4">
             <input
-                className="bg-white border focus:outline-none py-1 px-4 focus:ring-2 focus:ring-sky-500 rounded-lg w-50 text-gray-800 transition duration-200 ease-in-out"
+                className="bg-white border focus:outline-none py-1 px-4 focus:ring-2 focus:ring-sky-500 rounded-lg w-full text-gray-800 transition duration-200 ease-in-out"
                 type="text"
-                placeholder="Field Name"
+                placeholder="Question?"
                 onChange={(e) => props.setFieldNameCB(e.target.value)}
                 value={props.fieldName}
               />
@@ -20,7 +20,7 @@ export default function addFormField(props: {
                   value={props.fieldType}
                   onChange={(e) => props.setFieldTypeCB(e.target.value)}
                 >
-                  {["text", "date", "time", "color", "file", "url"].map(
+                  {["text", "date", "time", "color", "file", "url", "number"].map(
                     (type, index) => (
                       <option
                         value={type}
@@ -33,6 +33,6 @@ export default function addFormField(props: {
                   )}
                 </select>
               </div>
-        </>
+        </div>
     );
 }

@@ -1,9 +1,9 @@
 import React, { useEffect, useRef } from "react";
 import Header from "../components/Header";
-import FormInput from "../components/FormInput";
 import Button from "../components/Button";
 import AddFormField from "../components/AddFormField";
 import { Link, navigate } from "raviger";
+import QuestionInput from "../components/QuestionInput";
 
 interface formDataType {
   id: number;
@@ -65,15 +65,13 @@ export const getLocalForms = (): formDataType[] => {
   return [];
 };
 
-const getLocalFields = (id: number): formDataType => {
+export const getLocalFields = (id: number): formDataType => {
   const localForms = getLocalForms();
   const form = localForms.find((form) => form.id === id);
   if (form && form.fields.length > 0) {
     console.log("Found form", form, Date.now());
     return form;
   }
-  alert("No form found with id " + id);
-  navigate("/");
   return { id: 0, title: "", fields: [] };
 };
 
@@ -81,7 +79,7 @@ export const saveLocalForms = (formData: formDataType[]): void => {
   localStorage.setItem("forms", JSON.stringify(formData));
 };
 
-const setLocalFields = (formData: formDataType): void => {
+export const setLocalFields = (formData: formDataType): void => {
   const localForms = getLocalForms();
   const updatedForms = localForms.map((form) =>
     form.id === formData.id ? formData : form
@@ -122,13 +120,20 @@ export default function Form(props: {
     };
   }, [formData]);
 
+  useEffect(() => {
+    if (formData.id === 0) {
+      alert("No form found with id " + formData.id);
+      navigate("/");
+    }
+  }, [formData.id]);
+
   const setValue = (id: number, value: string) => {
     setFormData({
       ...formData,
       fields: [
         ...formData.fields.map((field) => {
           if (field.id === id) {
-            return { ...field, value };
+            return { ...field, label: value };
           }
           return field;
         }),
@@ -163,7 +168,7 @@ export default function Form(props: {
         ref={titleRef}
       />
       {formData.fields.map((field) => (
-        <FormInput
+        <QuestionInput
           id={field.id}
           key={field.id}
           type={field.type}
@@ -198,13 +203,22 @@ export default function Form(props: {
                 hoverColor="bg-red-800"
               />
 
-              <Button
-                size="py-1 px-4"
-                color="bg-red-500"
-                text="Close"
-                onClick={() => setShowAddForm(!showAddForm)}
-                hoverColor="bg-red-800"
-              />
+              <button onClick={() => setShowAddForm(!showAddForm)}>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-8 w-8 text-red-500"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+              </button>
             </div>
           </div>
         )}
