@@ -2,7 +2,8 @@ import { Link, useQueryParams } from "raviger";
 import { useState, useEffect, useRef } from "react";
 import Button from "../components/Button";
 import Header from "../components/Header";
-import { getLocalForms, saveLocalForms, defaultFields } from "./Form";
+import { getLocalForms, saveLocalForms } from "../utils/form";
+import { defaultFields } from "./Form";
 
 export default function Home() {
   const [forms, setForms] = useState(getLocalForms());

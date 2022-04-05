@@ -3,7 +3,7 @@ import React, { useEffect } from "react";
 import Button from "../components/Button";
 import FormInput from "../components/FormInput";
 import Header from "../components/Header";
-import { getLocalFields } from "./Form";
+import { getLocalFields } from "../utils/form";
 
 export default function Preview(props: { formId: number; fieldId: number }) {
   

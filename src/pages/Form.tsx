@@ -4,20 +4,8 @@ import Button from "../components/Button";
 import AddFormField from "../components/AddFormField";
 import { Link, navigate } from "raviger";
 import QuestionInput from "../components/QuestionInput";
-
-interface formDataType {
-  id: number;
-  title: string;
-  fields: formFieldsType[];
-}
-
-interface formFieldsType {
-  id: number;
-  name: string;
-  label: string;
-  type: string;
-  value: string;
-}
+import { formDataType, formFieldsType } from "../types/form";
+import { getLocalFields, getLocalForms, saveLocalForms } from "../utils/form";
 
 export const defaultFields: formFieldsType[] = [
   {
@@ -56,28 +44,6 @@ export const defaultFields: formFieldsType[] = [
     value: "",
   },
 ];
-
-export const getLocalForms = (): formDataType[] => {
-  const localForms = localStorage.getItem("forms");
-  if (localForms) {
-    return JSON.parse(localForms);
-  }
-  return [];
-};
-
-export const getLocalFields = (id: number): formDataType => {
-  const localForms = getLocalForms();
-  const form = localForms.find((form) => form.id === id);
-  if (form && form.fields.length > 0) {
-    console.log("Found form", form, Date.now());
-    return form;
-  }
-  return { id: 0, title: "", fields: [] };
-};
-
-export const saveLocalForms = (formData: formDataType[]): void => {
-  localStorage.setItem("forms", JSON.stringify(formData));
-};
 
 export const setLocalFields = (formData: formDataType): void => {
   const localForms = getLocalForms();
@@ -131,7 +97,7 @@ export default function Form(props: {
     setFormData({
       ...formData,
       fields: [
-        ...formData.fields.map((field) => {
+        ...formData.fields.map((field: formFieldsType) => {
           if (field.id === id) {
             return { ...field, label: value };
           }
@@ -153,7 +119,7 @@ export default function Form(props: {
   const deleteField = (id: number) => {
     setFormData({
       ...formData,
-      fields: formData.fields.filter((field) => field.id !== id),
+      fields: formData.fields.filter((field: formFieldsType) => field.id !== id),
     });
   };
   return (
@@ -167,7 +133,7 @@ export default function Form(props: {
         value={formData.title}
         ref={titleRef}
       />
-      {formData.fields.map((field) => (
+      {formData.fields.map((field: formFieldsType) => (
         <QuestionInput
           id={field.id}
           key={field.id}
@@ -239,7 +205,7 @@ export default function Form(props: {
             onClick={() => {
               setFormData({
                 ...formData,
-                fields: formData.fields.map((field) => ({
+                fields: formData.fields.map((field: formFieldsType) => ({
                   ...field,
                   value: "",
                 })),
