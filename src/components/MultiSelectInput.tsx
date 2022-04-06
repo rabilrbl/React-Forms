@@ -34,17 +34,15 @@ export default function MultiSelectInput(props: {
             setListOpen(!listOpen);
           }}
         >
-          <div className="w-full">
+          <div className="w-full h-full">
             {values.length > 0
               ? values.map((value, index) => {
                   console.log(value);
-                  return <span key={index}>{value}</span> + ", ";
+                  return <span key={index}>{value}</span>+" ";
                 })
               : "Select"}
           </div>
-        </div>
-
-          <div className="ml-auto order-last">
+          <div className="ml-auto order-last absolute right-4">
             <svg
               className="h-5 w-5 text-gray-500"
               viewBox="0 0 20 20"
@@ -57,6 +55,8 @@ export default function MultiSelectInput(props: {
               />
             </svg>
           </div>
+        </div>
+
           <div className="border px-2 py-1 rounded-lg flex flex-col space-y-2">
             {listOpen &&
               props.fieldOptions &&
