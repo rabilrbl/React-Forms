@@ -26,6 +26,7 @@ export default function AddFormField(props: {
           {[
             "text",
             "date",
+            "textarea",
             "time",
             "color",
             "file",

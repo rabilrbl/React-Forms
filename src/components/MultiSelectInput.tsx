@@ -48,7 +48,7 @@ export default function MultiSelectInput(props: {
           }}
         >
           <div className="w-full h-full flex space-x-2 flex-wrap bg-gray-100">
-            {!values.length && <span>Select choices</span>}
+            {values.length < 2 && <span>Select choices</span>}
             {values.map((value, index) => {
               return (
                 value !== "" && (
