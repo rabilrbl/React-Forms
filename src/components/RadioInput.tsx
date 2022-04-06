@@ -11,7 +11,7 @@ export default function RadioInput(props: {
     return <div>
         <label className="text-lg font-semibold" htmlFor={props.fieldName}
         >{props.fieldLabel}</label><br />
-        <div>
+        <div className="flex flex-col space-y-1 mt-2">
             {props.fieldOptions && props.fieldOptions.map((value, index) => {
                 return (
                     <label key={index}>

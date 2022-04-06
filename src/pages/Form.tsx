@@ -282,7 +282,7 @@ export default function Form(props: {
                 ...formData,
                 fields: formData.fields.map((field: formFieldsType) => ({
                   ...field,
-                  value: "",
+                  label: "",
                 })),
               });
             }}
