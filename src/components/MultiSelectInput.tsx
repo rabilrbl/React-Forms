@@ -11,7 +11,7 @@ export default function MultiSelectInput(props: {
   const [values, setValues] = React.useState<string[]>(() =>
     {
       const values = props.fieldValue.split(",").map((v) => v.trim());
-      values.shift();
+      // values.shift(); // remove first element
       return values;
     }
   );
@@ -75,6 +75,23 @@ export default function MultiSelectInput(props: {
         </div>
 
         <div className="border px-2 bg-gray-100 rounded-lg flex flex-col space-y-2">
+        {listOpen && <React.Fragment>
+                  <div className="flex space-x-2 items-center">
+                    <input
+                      type="checkbox"
+                      checked={values.length === props.fieldOptions?.length}
+                      className="w-5 h-5"
+                      onChange={(e) => {
+                        if (e.target.checked && props.fieldOptions) {
+                          setValues(props.fieldOptions);
+                        } else {
+                          setValues([]);
+                        }
+                      }}
+                    />
+                    <label>Select All</label>
+                  </div>
+                </React.Fragment>}
           {listOpen &&
             props.fieldOptions &&
             props.fieldOptions.map((option, index) => {

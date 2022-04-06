@@ -7,7 +7,6 @@ import QuestionInput from "../components/QuestionInput";
 import { fieldType, formDataType, formFieldsType } from "../types/form";
 import { getLocalFields, getLocalForms, saveLocalForms } from "../utils/form";
 import OptionsInput from "../components/OptionsInput";
-import MultiSelectInput from "../components/MultiSelectInput";
 
 export const defaultFields: formFieldsType[] = [
   {

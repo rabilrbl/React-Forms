@@ -68,13 +68,13 @@ export default function OptionsInput(props: {
             }}
           />
           <button
-            className="py-1 px-2 border text-[10px] rounded-lg bg-blue-200 hover:text-white hover:bg-blue-500"
+            className="py-1 px-2 border text-sm rounded-lg bg-blue-200 hover:text-white hover:bg-blue-500"
             onClick={() => {
               setFieldOptions([...fieldOptions, addOption]);
               setAddOption("");
             }}
           >
-            Add Option
+            Add
           </button>
         </div>
       </label>

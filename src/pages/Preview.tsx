@@ -6,7 +6,7 @@ import Header from "../components/Header";
 import MultiSelectInput from "../components/MultiSelectInput";
 import RadioInput from "../components/RadioInput";
 import SelectInput from "../components/SelectInput";
-import { fieldType, formFieldsType } from "../types/form";
+import { formFieldsType } from "../types/form";
 import { getLocalFields } from "../utils/form";
 
 export default function Preview(props: { formId: number; fieldId: number }) {
