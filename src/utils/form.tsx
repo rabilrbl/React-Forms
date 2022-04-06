@@ -11,7 +11,8 @@ export const getLocalForms = (): formDataType[] => {
 export const getLocalFields = (id: number): formDataType => {
   const localForms = getLocalForms();
   const form = localForms.find((form) => form.id === id);
-  if (form && form.fields.length > 0) {
+  console.log(form);
+  if (form) {
     console.log("Found form", form, Date.now());
     return form;
   }

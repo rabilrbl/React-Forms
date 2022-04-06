@@ -15,6 +15,9 @@ export default function Preview(props: { formId: number; fieldId: number }) {
     if (formData.id === 0) {
       alert("Not Found!");
       navigate("/");
+    } else if (formData.fields.length === 0) {
+      alert("No fields found!");
+      navigate("/");
     }
   });
 
