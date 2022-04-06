@@ -3,10 +3,13 @@ import React, { useEffect } from "react";
 import Button from "../components/Button";
 import FormInput from "../components/FormInput";
 import Header from "../components/Header";
+import MultiSelectInput from "../components/MultiSelectInput";
+import RadioInput from "../components/RadioInput";
+import SelectInput from "../components/SelectInput";
+import { fieldType, formFieldsType } from "../types/form";
 import { getLocalFields } from "../utils/form";
 
 export default function Preview(props: { formId: number; fieldId: number }) {
-  
   const [formData, setUserSub] = React.useState(getLocalFields(props.formId));
   const field = formData.fields[props.fieldId];
   const isMount = React.useRef(false);
@@ -27,7 +30,10 @@ export default function Preview(props: { formId: number; fieldId: number }) {
         const localSubs = localStorage.getItem("userSubs");
         const userSubs = JSON.parse(localSubs ? localSubs : "[]");
         if (userSubs) {
-          localStorage.setItem("userSubs", JSON.stringify([...userSubs, formData]));
+          // localStorage.setItem(
+          //   "userSubs",
+          //   JSON.stringify([...userSubs, formData])
+          // );
           console.log("State Saved at", Date.now());
         }
       }, 1000);
@@ -53,6 +59,46 @@ export default function Preview(props: { formId: number; fieldId: number }) {
     });
   };
 
+  const renderInput = (field: formFieldsType) => {
+    switch(field.type) {
+      case "select":
+        return <SelectInput fieldId={field.id}
+      fieldName={field.name}
+      fieldValue={field.value}
+      fieldOptions={field.options}
+      fieldLabel={field.label}
+      setValueCB={setValue}
+    />
+      case "radio":
+        return <RadioInput fieldId={field.id}
+      fieldName={field.name}
+      fieldValue={field.value}
+      fieldOptions={field.options}
+      fieldLabel={field.label}
+      setValueCB={setValue}
+    />
+    case "multi-select":
+      return (<MultiSelectInput
+        fieldId={field.id}
+        fieldName={field.name}
+        fieldValue={field.value}
+        fieldOptions={field.options}
+        fieldLabel={field.label}
+        setValueCB={setValue}
+      />);
+      
+      default:
+        return <FormInput
+      id={field.id}
+      type={field.type}
+      name={field.name}
+      label={field.label}
+      value={field.value}
+      setValueCB={setValue}
+    />
+    }
+  }
+
   return (
     <>
       <Header title="Quiz" />
@@ -65,16 +111,7 @@ export default function Preview(props: { formId: number; fieldId: number }) {
             alert("Submitted " + formData.title);
           }}
         >
-          {field && (
-            <FormInput
-              id={field.id}
-              type={field.type}
-              name={field.name}
-              label={field.label}
-              value={field.value}
-              setValueCB={setValue}
-            />
-          )}
+          {renderInput(field)}
           <div className="flex items-center space-x-2 justify-end pt-2 w-[90%]">
             {/* Previous button if previous field exists */}
             {props.fieldId > 0 && (

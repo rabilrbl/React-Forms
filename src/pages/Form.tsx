@@ -4,8 +4,10 @@ import Button from "../components/Button";
 import AddFormField from "../components/AddFormField";
 import { Link, navigate } from "raviger";
 import QuestionInput from "../components/QuestionInput";
-import { formDataType, formFieldsType } from "../types/form";
+import { fieldType, formDataType, formFieldsType } from "../types/form";
 import { getLocalFields, getLocalForms, saveLocalForms } from "../utils/form";
+import OptionsInput from "../components/OptionsInput";
+import MultiSelectInput from "../components/MultiSelectInput";
 
 export const defaultFields: formFieldsType[] = [
   {
@@ -63,7 +65,7 @@ export default function Form(props: {
   );
   const [fieldName, setFieldName] = React.useState("");
   const [showAddForm, setShowAddForm] = React.useState(false);
-  const [fieldType, setFieldType] = React.useState("text");
+  const [fieldType, setFieldType] = React.useState<fieldType>("text");
 
   const titleRef = useRef<HTMLInputElement>(null);
 
@@ -106,20 +108,65 @@ export default function Form(props: {
       ],
     });
   };
-  const addField = (name: string, label: string, type: string = "text") => {
+
+  const setOptions = (id: number, options: string[]) => {
     setFormData({
       ...formData,
       fields: [
-        ...formData.fields,
-        { id: Math.floor(Math.random() * 1000), name, label, type, value: "" },
+        ...formData.fields.map((field: formFieldsType) => {
+          if (field.id === id) {
+            return { ...field, options: options };
+          }
+          return field;
+        }),
       ],
     });
   };
 
+  const addField = (
+    name: string,
+    label: string,
+    type: fieldType
+  ) => {
+      if(type === "select" || type === "radio" || type === "multi-select"){
+        setFormData({
+          ...formData,
+          fields: [
+            ...formData.fields,
+            {
+              id: Math.floor(Math.random() * 1000),
+              name,
+              label,
+              type: type,
+              value: "",
+              options: []
+            },
+          ],
+        });
+      } else {
+
+        setFormData({
+          ...formData,
+          fields: [
+            ...formData.fields,
+            {
+              id: Math.floor(Math.random() * 1000),
+              name,
+              label,
+              type: type,
+              value: "",
+            },
+          ],
+        });
+      }
+    }
+
   const deleteField = (id: number) => {
     setFormData({
       ...formData,
-      fields: formData.fields.filter((field: formFieldsType) => field.id !== id),
+      fields: formData.fields.filter(
+        (field: formFieldsType) => field.id !== id
+      ),
     });
   };
   return (
@@ -133,18 +180,43 @@ export default function Form(props: {
         value={formData.title}
         ref={titleRef}
       />
-      {formData.fields.map((field: formFieldsType) => (
-        <QuestionInput
-          id={field.id}
-          key={field.id}
-          type={field.type}
-          name={field.name}
-          label={field.label}
-          value={field.value}
-          deleteFieldCB={deleteField}
-          setValueCB={setValue}
-        />
-      ))}
+      {formData.fields.map((field: formFieldsType) => {
+        switch (field.type) {
+          case "select":
+          case "radio":
+          case  "multi-select":
+            return (
+              <QuestionInput
+                key={field.id}
+                id={field.id}
+                name={field.name}
+                label={field.label}
+                type={field.type}
+                value={field.value}
+                setValueCB={setValue}
+                deleteFieldCB={deleteField}
+              >
+                {field.options && <OptionsInput fieldName={field.name} fieldId={field.id} setOptionsCB={setOptions} fieldOptions={field.options} />}
+              </QuestionInput>
+            );
+          default:
+            return (
+              <>
+                <QuestionInput
+                  id={field.id}
+                  key={field.id}
+                  type={field.type}
+                  name={field.name}
+                  label={field.label}
+                  value={field.value}
+                  deleteFieldCB={deleteField}
+                  setValueCB={setValue}
+                />
+                <hr className="my-5 " />
+              </>
+            );
+        }
+      })}
 
       <div className="relative px-2">
         {showAddForm && (
@@ -153,7 +225,7 @@ export default function Form(props: {
               <AddFormField
                 fieldName={fieldName}
                 setFieldNameCB={setFieldName}
-                fieldType={fieldType}
+                FieldType={fieldType}
                 setFieldTypeCB={setFieldType}
               />
               <Button
@@ -162,7 +234,11 @@ export default function Form(props: {
                 text="Add"
                 onClick={() => {
                   const name = fieldName ? fieldName : "New Field";
-                  addField(name.replace(" ", ""), name, fieldType);
+                  addField(
+                    name.replace(" ", ""),
+                    name,
+                    fieldType,
+                  );
                   setFieldName("");
                   setShowAddForm(!showAddForm);
                 }}
@@ -188,17 +264,16 @@ export default function Form(props: {
             </div>
           </div>
         )}
-
         <div className="space-x-2">
           {!showAddForm && (
-            <span
-              className="text-red-700 hover:underline cursor-pointer font-medium"
+            <button
+              className="bg-sky-500 px-4 py-2 text-white rounded-lg hover:underline cursor-pointer"
               onClick={() => {
                 setShowAddForm(!showAddForm);
               }}
             >
               Add field
-            </span>
+            </button>
           )}
           <span
             className="text-gray-700 hover:underline cursor-pointer font-medium"
@@ -216,12 +291,13 @@ export default function Form(props: {
           </span>
         </div>
       </div>
-
+      <hr className="my-3 " />
       <div>
         <Button
           color="bg-blue-600"
           text="Save"
           onClick={() => setLocalFields(formData)}
+          size="px-4 py-2 font-medium"
         />
         <Link className="bg-red-500 px-4 py-2 rounded-lg text-white " href="/">
           Close

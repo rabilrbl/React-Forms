@@ -1,8 +1,12 @@
-export default function addFormField(props: {
-    fieldName: string,
-    setFieldNameCB: (fieldName: string) => void,
-    fieldType: string,
-    setFieldTypeCB: (fieldType: string) => void,
+import React from "react";
+import { fieldType } from "../types/form";
+
+
+export default function AddFormField(props: {
+  fieldName: string,
+  setFieldNameCB: (fieldName: string) => void,
+  FieldType: fieldType,
+  setFieldTypeCB: (FieldType: fieldType) => void,
 }){
     return (
         <div className="flex w-full my-4">
@@ -17,10 +21,10 @@ export default function addFormField(props: {
                 <select
                   className="bg-white pr-6 focus:outline-none border border-gray-300 rounded-lg py-1 px-4 block w-50 max-w-fit leading-normal text-gray-700"
                   name="facility"
-                  value={props.fieldType}
-                  onChange={(e) => props.setFieldTypeCB(e.target.value)}
+                  value={props.FieldType}
+                  onChange={(e) => props.setFieldTypeCB(e.target.value as fieldType)}
                 >
-                  {["text", "date", "time", "color", "file", "url", "number"].map(
+                  {["text", "date", "time", "color", "file", "url", "number", "select", "radio", "multi-select"].map(
                     (type, index) => (
                       <option
                         value={type}
@@ -32,7 +36,7 @@ export default function addFormField(props: {
                     )
                   )}
                 </select>
-              </div>
+                </div>
         </div>
     );
 }
