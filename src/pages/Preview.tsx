@@ -60,44 +60,54 @@ export default function Preview(props: { formId: number; fieldId: number }) {
   };
 
   const renderInput = (field: formFieldsType) => {
-    switch(field.type) {
+    switch (field.type) {
       case "select":
-        return <SelectInput fieldId={field.id}
-      fieldName={field.name}
-      fieldValue={field.value}
-      fieldOptions={field.options}
-      fieldLabel={field.label}
-      setValueCB={setValue}
-    />
+        return (
+          <SelectInput
+            fieldId={field.id}
+            fieldName={field.name}
+            fieldValue={field.value}
+            fieldOptions={field.options}
+            fieldLabel={field.label}
+            setValueCB={setValue}
+          />
+        );
       case "radio":
-        return <RadioInput fieldId={field.id}
-      fieldName={field.name}
-      fieldValue={field.value}
-      fieldOptions={field.options}
-      fieldLabel={field.label}
-      setValueCB={setValue}
-    />
-    case "multi-select":
-      return (<MultiSelectInput
-        fieldId={field.id}
-        fieldName={field.name}
-        fieldValue={field.value}
-        fieldOptions={field.options}
-        fieldLabel={field.label}
-        setValueCB={setValue}
-      />);
-      
+        return (
+          <RadioInput
+            fieldId={field.id}
+            fieldName={field.name}
+            fieldValue={field.value}
+            fieldOptions={field.options}
+            fieldLabel={field.label}
+            setValueCB={setValue}
+          />
+        );
+      case "multi-select":
+        return (
+          <MultiSelectInput
+            fieldId={field.id}
+            fieldName={field.name}
+            fieldValue={field.value}
+            fieldOptions={field.options}
+            fieldLabel={field.label}
+            setValueCB={setValue}
+          />
+        );
+
       default:
-        return <FormInput
-      id={field.id}
-      type={field.type}
-      name={field.name}
-      label={field.label}
-      value={field.value}
-      setValueCB={setValue}
-    />
+        return (
+          <FormInput
+            id={field.id}
+            type={field.type}
+            name={field.name}
+            label={field.label}
+            value={field.value}
+            setValueCB={setValue}
+          />
+        );
     }
-  }
+  };
 
   return (
     <>

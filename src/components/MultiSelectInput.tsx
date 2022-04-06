@@ -8,13 +8,11 @@ export default function MultiSelectInput(props: {
   fieldLabel: string;
   setValueCB: (id: number, value: string) => void;
 }) {
-  const [values, setValues] = React.useState<string[]>(() =>
-    {
-      const values = props.fieldValue.split(",").map((v) => v.trim());
-      // values.shift(); // remove first element
-      return values;
-    }
-  );
+  const [values, setValues] = React.useState<string[]>(() => {
+    const values = props.fieldValue.split(",").map((v) => v.trim());
+    // values.shift(); // remove first element
+    return values;
+  });
   // Set first option as default
   // const isDone = React.useRef(false);
   // React.useEffect(() => {
@@ -50,12 +48,14 @@ export default function MultiSelectInput(props: {
           }}
         >
           <div className="w-full h-full flex space-x-2 flex-wrap bg-gray-100">
-          {!values.length && <span>Select choices</span>}
+            {!values.length && <span>Select choices</span>}
             {values.map((value, index) => {
-              return ( value !== "" &&
-                <div key={index} className="flex items-center">
-                  <span className="text-gray-800">{value}</span>
-                </div>
+              return (
+                value !== "" && (
+                  <div key={index} className="flex items-center">
+                    <span className="text-gray-800">{value}</span>
+                  </div>
+                )
               );
             })}
           </div>
@@ -75,23 +75,25 @@ export default function MultiSelectInput(props: {
         </div>
 
         <div className="border px-2 bg-gray-100 rounded-lg flex flex-col space-y-2">
-        {listOpen && <React.Fragment>
-                  <div className="flex space-x-2 items-center">
-                    <input
-                      type="checkbox"
-                      checked={values.length === props.fieldOptions?.length}
-                      className="w-5 h-5"
-                      onChange={(e) => {
-                        if (e.target.checked && props.fieldOptions) {
-                          setValues(props.fieldOptions);
-                        } else {
-                          setValues([]);
-                        }
-                      }}
-                    />
-                    <label>Select All</label>
-                  </div>
-                </React.Fragment>}
+          {listOpen && (
+            <React.Fragment>
+              <div className="flex space-x-2 items-center">
+                <input
+                  type="checkbox"
+                  checked={values.length === props.fieldOptions?.length}
+                  className="w-5 h-5"
+                  onChange={(e) => {
+                    if (e.target.checked && props.fieldOptions) {
+                      setValues(props.fieldOptions);
+                    } else {
+                      setValues([]);
+                    }
+                  }}
+                />
+                <label>Select All</label>
+              </div>
+            </React.Fragment>
+          )}
           {listOpen &&
             props.fieldOptions &&
             props.fieldOptions.map((option, index) => {

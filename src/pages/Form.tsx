@@ -122,43 +122,38 @@ export default function Form(props: {
     });
   };
 
-  const addField = (
-    name: string,
-    label: string,
-    type: fieldType
-  ) => {
-      if(type === "select" || type === "radio" || type === "multi-select"){
-        setFormData({
-          ...formData,
-          fields: [
-            ...formData.fields,
-            {
-              id: Math.floor(Math.random() * 1000),
-              name,
-              label,
-              type: type,
-              value: "",
-              options: []
-            },
-          ],
-        });
-      } else {
-
-        setFormData({
-          ...formData,
-          fields: [
-            ...formData.fields,
-            {
-              id: Math.floor(Math.random() * 1000),
-              name,
-              label,
-              type: type,
-              value: "",
-            },
-          ],
-        });
-      }
+  const addField = (name: string, label: string, type: fieldType) => {
+    if (type === "select" || type === "radio" || type === "multi-select") {
+      setFormData({
+        ...formData,
+        fields: [
+          ...formData.fields,
+          {
+            id: Math.floor(Math.random() * 1000),
+            name,
+            label,
+            type: type,
+            value: "",
+            options: [],
+          },
+        ],
+      });
+    } else {
+      setFormData({
+        ...formData,
+        fields: [
+          ...formData.fields,
+          {
+            id: Math.floor(Math.random() * 1000),
+            name,
+            label,
+            type: type,
+            value: "",
+          },
+        ],
+      });
     }
+  };
 
   const deleteField = (id: number) => {
     setFormData({
@@ -183,7 +178,7 @@ export default function Form(props: {
         switch (field.type) {
           case "select":
           case "radio":
-          case  "multi-select":
+          case "multi-select":
             return (
               <QuestionInput
                 key={field.id}
@@ -195,7 +190,14 @@ export default function Form(props: {
                 setValueCB={setValue}
                 deleteFieldCB={deleteField}
               >
-                {field.options && <OptionsInput fieldName={field.name} fieldId={field.id} setOptionsCB={setOptions} fieldOptions={field.options} />}
+                {field.options && (
+                  <OptionsInput
+                    fieldName={field.name}
+                    fieldId={field.id}
+                    setOptionsCB={setOptions}
+                    fieldOptions={field.options}
+                  />
+                )}
               </QuestionInput>
             );
           default:
@@ -233,11 +235,7 @@ export default function Form(props: {
                 text="Add"
                 onClick={() => {
                   const name = fieldName ? fieldName : "New Field";
-                  addField(
-                    name.replace(" ", ""),
-                    name,
-                    fieldType,
-                  );
+                  addField(name.replace(" ", ""), name, fieldType);
                   setFieldName("");
                   setShowAddForm(!showAddForm);
                 }}

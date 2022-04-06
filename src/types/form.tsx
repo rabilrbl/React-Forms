@@ -27,7 +27,6 @@ export type fieldType =
   | "image"
   | "multi-select";
 
-
 export interface TextInput {
   id: number;
   name: string;
