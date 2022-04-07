@@ -10,7 +10,7 @@ export default function MultiSelectInput(props: {
 }) {
   const [values, setValues] = React.useState<string[]>(() => {
     const values = props.fieldValue.split(",").map((v) => v.trim());
-    values[0] === '' && values.shift(); 
+    values[0] === "" && values.shift();
     return values;
   });
   // Set first option as default
@@ -49,15 +49,7 @@ export default function MultiSelectInput(props: {
         >
           <div className="w-full h-full flex space-x-2 flex-wrap bg-gray-100">
             {values.length === 0 && <span>Select choices</span>}
-            {values.map((value, index) => {
-              return (
-                value !== "" && (
-                  <div key={index} className="flex items-center">
-                    <span className="text-gray-800">{value}</span>
-                  </div>
-                )
-              );
-            })}
+            {values.join(", ")}
           </div>
           <div className="ml-auto order-last">
             <svg
@@ -81,7 +73,7 @@ export default function MultiSelectInput(props: {
                 <input
                   type="checkbox"
                   checked={values.length === props.fieldOptions?.length}
-                  className="w-5 h-5"
+                  className="w-5 h-5 rounded-lg"
                   onChange={(e) => {
                     if (e.target.checked && props.fieldOptions) {
                       setValues(props.fieldOptions);
@@ -103,7 +95,7 @@ export default function MultiSelectInput(props: {
                     <input
                       type="checkbox"
                       checked={values.includes(option)}
-                      className="w-5 h-5"
+                      className="w-5 h-5 rounded-lg"
                       onChange={(e) => {
                         if (e.target.checked) {
                           setValues([...values, option]);
@@ -111,8 +103,8 @@ export default function MultiSelectInput(props: {
                           setValues(values.filter((value) => value !== option));
                         }
                       }}
-                    />
-                    <label>{option}</label>
+                      />
+                      <label>{option}</label>
                   </div>
                 </React.Fragment>
               );
