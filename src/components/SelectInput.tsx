@@ -24,9 +24,9 @@ export default function SelectInput(props: {
         }}
       >
         {props.fieldOptions &&
-          props.fieldOptions.map((value) => {
+          props.fieldOptions.map((value, index) => {
             return (
-              <option value={value} selected={props.fieldValue === value}>
+              <option key={index} value={value}>
                 {value}
               </option>
             );

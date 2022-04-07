@@ -30,14 +30,14 @@ export default function OptionsInput(props: {
                 <div className="flex items-center">
                   {option}{" "}
                   <button
-                    onClick={() => {
-                      setFieldOptions([
-                        ...fieldOptions.filter((_, i) => i !== index),
-                      ]);
-                    }}
                     className="ml-2"
                   >
                     <svg
+                     onClick={() => {
+                      setFieldOptions(
+                        fieldOptions.filter((_, i) => i !== index),
+                      );
+                    }}
                       xmlns="http://www.w3.org/2000/svg"
                       className="h-5 w-5 text-red-500"
                       fill="none"

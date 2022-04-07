@@ -10,7 +10,7 @@ export default function MultiSelectInput(props: {
 }) {
   const [values, setValues] = React.useState<string[]>(() => {
     const values = props.fieldValue.split(",").map((v) => v.trim());
-    // values.shift(); // remove first element
+    values[0] === '' && values.shift(); 
     return values;
   });
   // Set first option as default
@@ -48,7 +48,7 @@ export default function MultiSelectInput(props: {
           }}
         >
           <div className="w-full h-full flex space-x-2 flex-wrap bg-gray-100">
-            {values.length < 2 && <span>Select choices</span>}
+            {values.length === 0 && <span>Select choices</span>}
             {values.map((value, index) => {
               return (
                 value !== "" && (

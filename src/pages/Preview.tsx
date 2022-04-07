@@ -7,7 +7,7 @@ import MultiSelectInput from "../components/MultiSelectInput";
 import RadioInput from "../components/RadioInput";
 import SelectInput from "../components/SelectInput";
 import TextAreaInput from "../components/TextAreaInput";
-import { formFieldsType } from "../types/form";
+import { DropdownInput, formFieldsType } from "../types/form";
 import { getLocalFields } from "../utils/form";
 
 export default function Preview(props: { formId: number; fieldId: number }) {
@@ -68,7 +68,7 @@ export default function Preview(props: { formId: number; fieldId: number }) {
             fieldId={field.id}
             fieldName={field.name}
             fieldValue={field.value}
-            fieldOptions={field.options}
+            fieldOptions={(field as DropdownInput).options}
             fieldLabel={field.label}
             setValueCB={setValue}
           />
@@ -79,7 +79,7 @@ export default function Preview(props: { formId: number; fieldId: number }) {
             fieldId={field.id}
             fieldName={field.name}
             fieldValue={field.value}
-            fieldOptions={field.options}
+            fieldOptions={(field as DropdownInput).options}
             fieldLabel={field.label}
             setValueCB={setValue}
           />
@@ -90,7 +90,7 @@ export default function Preview(props: { formId: number; fieldId: number }) {
             fieldId={field.id}
             fieldName={field.name}
             fieldValue={field.value}
-            fieldOptions={field.options}
+            fieldOptions={(field as DropdownInput).options}
             fieldLabel={field.label}
             setValueCB={setValue}
           />

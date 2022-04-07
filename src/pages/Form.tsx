@@ -4,7 +4,12 @@ import Button from "../components/Button";
 import AddFormField from "../components/AddFormField";
 import { Link, navigate } from "raviger";
 import QuestionInput from "../components/QuestionInput";
-import { fieldType, formDataType, formFieldsType } from "../types/form";
+import {
+  DropdownInput,
+  fieldType,
+  formDataType,
+  formFieldsType,
+} from "../types/form";
 import { getLocalFields, getLocalForms, saveLocalForms } from "../utils/form";
 import OptionsInput from "../components/OptionsInput";
 
@@ -190,22 +195,21 @@ export default function Form(props: {
                 setValueCB={setValue}
                 deleteFieldCB={deleteField}
               >
-                {field.options && (
+                {(field as DropdownInput).options && (
                   <OptionsInput
                     fieldName={field.name}
                     fieldId={field.id}
                     setOptionsCB={setOptions}
-                    fieldOptions={field.options}
+                    fieldOptions={(field as DropdownInput).options}
                   />
                 )}
               </QuestionInput>
             );
           default:
             return (
-              <>
+              <React.Fragment key={field.id}>
                 <QuestionInput
                   id={field.id}
-                  key={field.id}
                   type={field.type}
                   name={field.name}
                   label={field.label}
@@ -214,7 +218,7 @@ export default function Form(props: {
                   setValueCB={setValue}
                 />
                 <hr className="my-5 " />
-              </>
+              </React.Fragment>
             );
         }
       })}

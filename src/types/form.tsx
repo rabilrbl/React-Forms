@@ -27,22 +27,15 @@ export type fieldType =
   | "image"
   | "multi-select";
 
-export interface TextInput {
+export interface DropdownInput {
   id: number;
   name: string;
   label: string;
   type: fieldType;
   value: string;
-  options?: string[];
-}
-
-export interface DropdownInput {
-  id: number;
-  name: string;
-  label: string;
-  type: "select" | "radio";
-  value: string;
   options: string[];
 }
 
-export type formFieldsType = TextInput | DropdownInput;
+export type TextInput = Omit<DropdownInput, "options">;
+
+export type formFieldsType = DropdownInput | TextInput;
