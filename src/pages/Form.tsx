@@ -4,9 +4,11 @@ import Button from "../components/Button";
 import AddFormField from "../components/AddFormField";
 import { Link, navigate } from "raviger";
 import QuestionInput from "../components/QuestionInput";
-import { fieldType, formDataType, formFieldsType } from "../types/form";
+import { formDataType, formFieldsType } from "../types/form";
 import { getLocalFields, getLocalForms, saveLocalForms } from "../utils/form";
 import OptionsInput from "../components/OptionsInput";
+import { FormReducer } from "../reducers/FormReducer";
+import { FieldReducer } from "../reducers/FieldReducer";
 
 export const defaultFields: formFieldsType[] = [
   {
@@ -59,12 +61,20 @@ export default function Form(props: {
   method: string;
   id: number;
 }) {
-  const [formData, setFormData] = React.useState(() =>
-    getLocalFields(props.id)
+  const [formData, dispatch] = React.useReducer(
+    FormReducer,
+    {
+      id: 0,
+      fields: [],
+      title: "",
+    },
+    () => getLocalFields(props.id)
   );
-  const [fieldName, setFieldName] = React.useState("");
-  const [showAddForm, setShowAddForm] = React.useState(false);
-  const [fieldType, setFieldType] = React.useState<fieldType>("text");
+  const [field, fieldDispatch] = React.useReducer(FieldReducer, {
+    name: "",
+    addForm: false,
+    type: "text",
+  });
 
   const titleRef = useRef<HTMLInputElement>(null);
 
@@ -94,75 +104,6 @@ export default function Form(props: {
     }
   }, [formData.id]);
 
-  const setValue = (id: number, value: string) => {
-    setFormData({
-      ...formData,
-      fields: [
-        ...formData.fields.map((field: formFieldsType) => {
-          if (field.id === id) {
-            return { ...field, label: value };
-          }
-          return field;
-        }),
-      ],
-    });
-  };
-
-  const setOptions = (id: number, options: string[]) => {
-    setFormData({
-      ...formData,
-      fields: [
-        ...formData.fields.map((field: formFieldsType) => {
-          if (field.id === id) {
-            return { ...field, options: options };
-          }
-          return field;
-        }),
-      ],
-    });
-  };
-
-  const addField = (name: string, label: string, type: fieldType) => {
-    if (type === "select" || type === "radio" || type === "multi-select") {
-      setFormData({
-        ...formData,
-        fields: [
-          ...formData.fields,
-          {
-            id: Math.floor(Math.random() * 1000),
-            name,
-            label,
-            type: type,
-            value: "",
-            options: [],
-          },
-        ],
-      });
-    } else {
-      setFormData({
-        ...formData,
-        fields: [
-          ...formData.fields,
-          {
-            id: Math.floor(Math.random() * 1000),
-            name,
-            label,
-            type: type,
-            value: "",
-          },
-        ],
-      });
-    }
-  };
-
-  const deleteField = (id: number) => {
-    setFormData({
-      ...formData,
-      fields: formData.fields.filter(
-        (field: formFieldsType) => field.id !== id
-      ),
-    });
-  };
   return (
     <>
       <Header title="WD302 React with Tailwindcss" />
@@ -170,7 +111,7 @@ export default function Form(props: {
         className="bg-white focus:outline-none py-1 px-4 focus:ring-2 focus:ring-sky-500 rounded-lg w-full text-gray-800 transition duration-200 ease-in-out"
         type="text"
         placeholder="Enter title for your form"
-        onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+        onChange={(e) => dispatch({ type: "SET_TITLE", title: e.target.value })}
         value={formData.title}
         ref={titleRef}
       />
@@ -187,14 +128,24 @@ export default function Form(props: {
                 label={field.label}
                 type={field.type}
                 value={field.value}
-                setValueCB={setValue}
-                deleteFieldCB={deleteField}
+                setValueCB={(id, value) =>
+                  dispatch({ type: "SET_VALUE", id: id, value: value })
+                }
+                deleteFieldCB={(id: number) =>
+                  dispatch({ type: "DELETE_FIELD", id: id })
+                }
               >
                 {field.options && (
                   <OptionsInput
                     fieldName={field.name}
                     fieldId={field.id}
-                    setOptionsCB={setOptions}
+                    setOptionsCB={(id, options) =>
+                      dispatch({
+                        type: "SET_OPTIONS",
+                        id: id,
+                        options: options,
+                      })
+                    }
                     fieldOptions={field.options}
                   />
                 )}
@@ -210,8 +161,12 @@ export default function Form(props: {
                   name={field.name}
                   label={field.label}
                   value={field.value}
-                  deleteFieldCB={deleteField}
-                  setValueCB={setValue}
+                  deleteFieldCB={(id: number) =>
+                    dispatch({ type: "DELETE_FIELD", id: id })
+                  }
+                  setValueCB={(id, value) =>
+                    dispatch({ type: "SET_VALUE", id: id, value: value })
+                  }
                 />
                 <hr className="my-5 " />
               </>
@@ -220,29 +175,34 @@ export default function Form(props: {
       })}
 
       <div className="relative px-2">
-        {showAddForm && (
+        {field.addForm && (
           <div id="formField" className="rounded-xl">
             <div className="flex items-center space-x-2">
               <AddFormField
-                fieldName={fieldName}
-                setFieldNameCB={setFieldName}
-                FieldType={fieldType}
-                setFieldTypeCB={setFieldType}
+                fieldName={field.name}
+                setFieldNameCB={(name) => fieldDispatch({type: "SET_NAME", name: name})}
+                FieldType={field.type}
+                setFieldTypeCB={(type) => fieldDispatch({type: "SET_TYPE", fieldType: type})}
               />
               <Button
                 size="py-1 px-4"
                 color="bg-blue-500"
                 text="Add"
                 onClick={() => {
-                  const name = fieldName ? fieldName : "New Field";
-                  addField(name.replace(" ", ""), name, fieldType);
-                  setFieldName("");
-                  setShowAddForm(!showAddForm);
+                  const name = field.name ? field.name : "New Field";
+                  dispatch({
+                    type: "ADD_FIELD",
+                    name: name.replace(" ", ""),
+                    label: name,
+                    formType: field.type,
+                  });
+                  fieldDispatch({type: "SET_NAME", name: ""});
+                  fieldDispatch({type: "TOGGLE_ADD"});
                 }}
                 hoverColor="bg-red-800"
               />
 
-              <button onClick={() => setShowAddForm(!showAddForm)}>
+              <button onClick={() => fieldDispatch({type: "TOGGLE_ADD"})}>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="h-8 w-8 text-red-500"
@@ -262,11 +222,11 @@ export default function Form(props: {
           </div>
         )}
         <div className="space-x-2">
-          {!showAddForm && (
+          {!field.addForm && (
             <button
               className="bg-sky-500 px-4 py-2 text-white rounded-lg hover:underline cursor-pointer"
               onClick={() => {
-                setShowAddForm(!showAddForm);
+                fieldDispatch({type: "TOGGLE_ADD"});
               }}
             >
               Add field
@@ -275,13 +235,7 @@ export default function Form(props: {
           <span
             className="text-gray-700 hover:underline cursor-pointer font-medium"
             onClick={() => {
-              setFormData({
-                ...formData,
-                fields: formData.fields.map((field: formFieldsType) => ({
-                  ...field,
-                  label: "",
-                })),
-              });
+              dispatch({ type: "CLEAR_FIELDS" });
             }}
           >
             Clear fields
