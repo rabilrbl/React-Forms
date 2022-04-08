@@ -4,12 +4,7 @@ import Button from "../components/Button";
 import AddFormField from "../components/AddFormField";
 import { Link, navigate } from "raviger";
 import QuestionInput from "../components/QuestionInput";
-import {
-  DropdownInput,
-  fieldType,
-  formDataType,
-  formFieldsType,
-} from "../types/form";
+import { formDataType, formFieldsType } from "../types/form";
 import { getLocalFields, getLocalForms, saveLocalForms } from "../utils/form";
 import OptionsInput from "../components/OptionsInput";
 import { FormReducer } from "../reducers/FormReducer";
@@ -144,40 +139,44 @@ export default function Form(props: {
               label={field.label}
               type={field.type}
               value={field.value}
-              setValueCB={(id: number,value: string) => dispatch({type: "SET_VALUE", id, value})}
-              deleteFieldCB={(id: number) => dispatch({type: "DELETE_FIELD", id})}
+              setValueCB={(id: number, value: string) =>
+                dispatch({ type: "SET_VALUE", id, value })
+              }
+              deleteFieldCB={(id: number) =>
+                dispatch({ type: "DELETE_FIELD", id })
+              }
             >
               {field.options && (
                 <OptionsInput
                   fieldName={field.name}
                   fieldId={field.id}
-                  setOptionsCB={(id: number, options: string[]) => dispatch({type: "SET_OPTIONS", id, options})}
+                  setOptionsCB={(id: number, options: string[]) =>
+                    dispatch({ type: "SET_OPTIONS", id, options })
+                  }
                   fieldOptions={field.options}
                 />
               )}
             </QuestionInput>
           );
         } else if (field.kind === "text") {
-          
           return (
-              <>
-                <QuestionInput
-                  id={field.id}
-                  key={field.id}
-                  type={field.type}
-                  name={field.name}
-                  label={field.label}
-                  value={field.value}
-                  deleteFieldCB={(id: number) =>
-                    dispatch({ type: "DELETE_FIELD", id: id })
-                  }
-                  setValueCB={(id, value) =>
-                    dispatch({ type: "SET_VALUE", id: id, value: value })
-                  }
-                />
-                <hr className="my-5 " />
-              </>
-            );
+            <React.Fragment key={field.id}>
+              <QuestionInput
+                id={field.id}
+                type={field.type}
+                name={field.name}
+                label={field.label}
+                value={field.value}
+                deleteFieldCB={(id: number) =>
+                  dispatch({ type: "DELETE_FIELD", id: id })
+                }
+                setValueCB={(id, value) =>
+                  dispatch({ type: "SET_VALUE", id: id, value: value })
+                }
+              />
+              <hr className="my-5 " />
+            </React.Fragment>
+          );
         }
       })}
 
@@ -187,9 +186,13 @@ export default function Form(props: {
             <div className="flex items-center space-x-2">
               <AddFormField
                 fieldName={field.name}
-                setFieldNameCB={(name) => fieldDispatch({type: "SET_NAME", name: name})}
+                setFieldNameCB={(name) =>
+                  fieldDispatch({ type: "SET_NAME", name: name })
+                }
                 FieldType={field.type}
-                setFieldTypeCB={(type) => fieldDispatch({type: "SET_TYPE", fieldType: type})}
+                setFieldTypeCB={(type) =>
+                  fieldDispatch({ type: "SET_TYPE", fieldType: type })
+                }
               />
               <Button
                 size="py-1 px-4"
@@ -203,13 +206,13 @@ export default function Form(props: {
                     label: name,
                     formType: field.type,
                   });
-                  fieldDispatch({type: "SET_NAME", name: ""});
-                  fieldDispatch({type: "TOGGLE_ADD"});
+                  fieldDispatch({ type: "SET_NAME", name: "" });
+                  fieldDispatch({ type: "TOGGLE_ADD" });
                 }}
                 hoverColor="bg-red-800"
               />
 
-              <button onClick={() => fieldDispatch({type: "TOGGLE_ADD"})}>
+              <button onClick={() => fieldDispatch({ type: "TOGGLE_ADD" })}>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="h-8 w-8 text-red-500"
@@ -233,7 +236,7 @@ export default function Form(props: {
             <button
               className="bg-sky-500 px-4 py-2 text-white rounded-lg hover:underline cursor-pointer"
               onClick={() => {
-                fieldDispatch({type: "TOGGLE_ADD"});
+                fieldDispatch({ type: "TOGGLE_ADD" });
               }}
             >
               Add field
