@@ -27,22 +27,23 @@ export type fieldType =
   | "image"
   | "multi-select";
 
-export interface TextInput {
+type TextInput = {
   id: number;
+  kind: "text";
   name: string;
   label: string;
   type: fieldType;
   value: string;
-  options?: string[];
-}
+};
 
 export interface DropdownInput {
   id: number;
+  kind: "dropdown";
   name: string;
   label: string;
-  type: "select" | "radio";
+  type: fieldType;
   value: string;
   options: string[];
 }
 
-export type formFieldsType = TextInput | DropdownInput;
+export type formFieldsType = DropdownInput | TextInput;

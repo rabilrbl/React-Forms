@@ -10,14 +10,19 @@ export default function OptionsInput(props: {
   const [fieldOptions, setFieldOptions] = React.useState<string[]>(
     props.fieldOptions
   );
+  const isMount = React.useRef(false);
   React.useEffect(() => {
-    const timeout = setTimeout(() => {
-      console.log("Options Saved at", Date.now());
-      props.setOptionsCB(props.fieldId, fieldOptions);
-    }, 1000);
-    return () => {
-      clearTimeout(timeout);
-    };
+    if (isMount.current) {
+      const timeout = setTimeout(() => {
+        console.log("Options Saved at", Date.now());
+        props.setOptionsCB(props.fieldId, fieldOptions);
+      }, 1000);
+      return () => {
+        clearTimeout(timeout);
+      };
+    } else {
+      isMount.current = true;
+    }
   }, [fieldOptions]);
   return (
     <div>
@@ -30,14 +35,14 @@ export default function OptionsInput(props: {
                 <div className="flex items-center">
                   {option}{" "}
                   <button
-                    onClick={() => {
-                      setFieldOptions([
-                        ...fieldOptions.filter((_, i) => i !== index),
-                      ]);
-                    }}
                     className="ml-2"
                   >
                     <svg
+                     onClick={() => {
+                      setFieldOptions(
+                        fieldOptions.filter((_, i) => i !== index),
+                      );
+                    }}
                       xmlns="http://www.w3.org/2000/svg"
                       className="h-5 w-5 text-red-500"
                       fill="none"

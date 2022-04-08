@@ -4,7 +4,12 @@ import Button from "../components/Button";
 import AddFormField from "../components/AddFormField";
 import { Link, navigate } from "raviger";
 import QuestionInput from "../components/QuestionInput";
-import { formDataType, formFieldsType } from "../types/form";
+import {
+  DropdownInput,
+  fieldType,
+  formDataType,
+  formFieldsType,
+} from "../types/form";
 import { getLocalFields, getLocalForms, saveLocalForms } from "../utils/form";
 import OptionsInput from "../components/OptionsInput";
 import { FormReducer } from "../reducers/FormReducer";
@@ -12,6 +17,7 @@ import { FieldReducer } from "../reducers/FieldReducer";
 
 export const defaultFields: formFieldsType[] = [
   {
+    kind: "text",
     id: 1,
     name: "firstName",
     label: "First Name",
@@ -19,6 +25,7 @@ export const defaultFields: formFieldsType[] = [
     value: "",
   },
   {
+    kind: "text",
     id: 2,
     name: "lastName",
     label: "Last Name",
@@ -26,6 +33,7 @@ export const defaultFields: formFieldsType[] = [
     value: "",
   },
   {
+    kind: "text",
     id: 3,
     name: "email",
     label: "Email",
@@ -33,6 +41,7 @@ export const defaultFields: formFieldsType[] = [
     value: "",
   },
   {
+    kind: "text",
     id: 4,
     name: "phone",
     label: "Phone Number",
@@ -40,11 +49,21 @@ export const defaultFields: formFieldsType[] = [
     value: "",
   },
   {
+    kind: "text",
     id: 5,
     name: "dateOfBirth",
     label: "Date Of Birth",
     type: "date",
     value: "",
+  },
+  {
+    kind: "dropdown",
+    id: 6,
+    name: "Dropdown",
+    label: "Dropdown",
+    type: "select",
+    value: "",
+    options: ["Option 1", "Option 2", "Option 3"],
   },
 ];
 
@@ -116,43 +135,31 @@ export default function Form(props: {
         ref={titleRef}
       />
       {formData.fields.map((field: formFieldsType) => {
-        switch (field.type) {
-          case "select":
-          case "radio":
-          case "multi-select":
-            return (
-              <QuestionInput
-                key={field.id}
-                id={field.id}
-                name={field.name}
-                label={field.label}
-                type={field.type}
-                value={field.value}
-                setValueCB={(id, value) =>
-                  dispatch({ type: "SET_VALUE", id: id, value: value })
-                }
-                deleteFieldCB={(id: number) =>
-                  dispatch({ type: "DELETE_FIELD", id: id })
-                }
-              >
-                {field.options && (
-                  <OptionsInput
-                    fieldName={field.name}
-                    fieldId={field.id}
-                    setOptionsCB={(id, options) =>
-                      dispatch({
-                        type: "SET_OPTIONS",
-                        id: id,
-                        options: options,
-                      })
-                    }
-                    fieldOptions={field.options}
-                  />
-                )}
-              </QuestionInput>
-            );
-          default:
-            return (
+        if (field.kind === "dropdown") {
+          return (
+            <QuestionInput
+              key={field.id}
+              id={field.id}
+              name={field.name}
+              label={field.label}
+              type={field.type}
+              value={field.value}
+              setValueCB={(id: number,value: string) => dispatch({type: "SET_VALUE", id, value})}
+              deleteFieldCB={(id: number) => dispatch({type: "DELETE_FIELD", id})}
+            >
+              {field.options && (
+                <OptionsInput
+                  fieldName={field.name}
+                  fieldId={field.id}
+                  setOptionsCB={(id: number, options: string[]) => dispatch({type: "SET_OPTIONS", id, options})}
+                  fieldOptions={field.options}
+                />
+              )}
+            </QuestionInput>
+          );
+        } else if (field.kind === "text") {
+          
+          return (
               <>
                 <QuestionInput
                   id={field.id}
