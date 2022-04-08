@@ -7,11 +7,21 @@ import MultiSelectInput from "../components/MultiSelectInput";
 import RadioInput from "../components/RadioInput";
 import SelectInput from "../components/SelectInput";
 import TextAreaInput from "../components/TextAreaInput";
-import { DropdownInput, formFieldsType } from "../types/form";
+import { PreviewReducer } from "../reducers/PreviewReducer";
+import { formFieldsType } from "../types/form";
 import { getLocalFields } from "../utils/form";
 
 export default function Preview(props: { formId: number; fieldId: number }) {
-  const [formData, setUserSub] = React.useState(getLocalFields(props.formId));
+  const [formData, dispatch] = React.useReducer(
+    PreviewReducer,
+    {
+      id: 0,
+      fields: [],
+      title: "",
+    },
+    () => getLocalFields(props.formId)
+  );
+
   const field = formData.fields[props.fieldId];
   const isMount = React.useRef(false);
 
@@ -47,17 +57,7 @@ export default function Preview(props: { formId: number; fieldId: number }) {
   }, [formData]);
 
   const setValue = (id: number, value: string) => {
-    setUserSub({
-      ...formData,
-      fields: [
-        ...formData.fields.map((field) => {
-          if (field.id === id) {
-            return { ...field, value };
-          }
-          return field;
-        }),
-      ],
-    });
+    dispatch({ type: "SET_VALUE", id, value });
   };
 
   const renderInput = (field: formFieldsType) => {
