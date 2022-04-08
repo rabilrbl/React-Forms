@@ -10,14 +10,19 @@ export default function OptionsInput(props: {
   const [fieldOptions, setFieldOptions] = React.useState<string[]>(
     props.fieldOptions
   );
+  const isMount = React.useRef(false);
   React.useEffect(() => {
-    const timeout = setTimeout(() => {
-      console.log("Options Saved at", Date.now());
-      props.setOptionsCB(props.fieldId, fieldOptions);
-    }, 1000);
-    return () => {
-      clearTimeout(timeout);
-    };
+    if (isMount.current) {
+      const timeout = setTimeout(() => {
+        console.log("Options Saved at", Date.now());
+        props.setOptionsCB(props.fieldId, fieldOptions);
+      }, 1000);
+      return () => {
+        clearTimeout(timeout);
+      };
+    } else {
+      isMount.current = true;
+    }
   }, [fieldOptions]);
   return (
     <div>

@@ -15,6 +15,7 @@ import OptionsInput from "../components/OptionsInput";
 
 export const defaultFields: formFieldsType[] = [
   {
+    kind: "text",
     id: 1,
     name: "firstName",
     label: "First Name",
@@ -22,6 +23,7 @@ export const defaultFields: formFieldsType[] = [
     value: "",
   },
   {
+    kind: "text",
     id: 2,
     name: "lastName",
     label: "Last Name",
@@ -29,6 +31,7 @@ export const defaultFields: formFieldsType[] = [
     value: "",
   },
   {
+    kind: "text",
     id: 3,
     name: "email",
     label: "Email",
@@ -36,6 +39,7 @@ export const defaultFields: formFieldsType[] = [
     value: "",
   },
   {
+    kind: "text",
     id: 4,
     name: "phone",
     label: "Phone Number",
@@ -43,11 +47,21 @@ export const defaultFields: formFieldsType[] = [
     value: "",
   },
   {
+    kind: "text",
     id: 5,
     name: "dateOfBirth",
     label: "Date Of Birth",
     type: "date",
     value: "",
+  },
+  {
+    kind: "dropdown",
+    id: 6,
+    name: "Dropdown",
+    label: "Dropdown",
+    type: "select",
+    value: "",
+    options: ["Option 1", "Option 2", "Option 3"],
   },
 ];
 
@@ -135,6 +149,7 @@ export default function Form(props: {
           ...formData.fields,
           {
             id: Math.floor(Math.random() * 1000),
+            kind: "dropdown",
             name,
             label,
             type: type,
@@ -150,6 +165,7 @@ export default function Form(props: {
           ...formData.fields,
           {
             id: Math.floor(Math.random() * 1000),
+            kind: "text",
             name,
             label,
             type: type,
@@ -180,46 +196,43 @@ export default function Form(props: {
         ref={titleRef}
       />
       {formData.fields.map((field: formFieldsType) => {
-        switch (field.type) {
-          case "select":
-          case "radio":
-          case "multi-select":
-            return (
+        if (field.kind === "dropdown") {
+          return (
+            <QuestionInput
+              key={field.id}
+              id={field.id}
+              name={field.name}
+              label={field.label}
+              type={field.type}
+              value={field.value}
+              setValueCB={setValue}
+              deleteFieldCB={deleteField}
+            >
+              {field.options && (
+                <OptionsInput
+                  fieldName={field.name}
+                  fieldId={field.id}
+                  setOptionsCB={setOptions}
+                  fieldOptions={field.options}
+                />
+              )}
+            </QuestionInput>
+          );
+        } else if (field.kind === "text") {
+          return (
+            <React.Fragment key={field.id}>
               <QuestionInput
-                key={field.id}
                 id={field.id}
+                type={field.type}
                 name={field.name}
                 label={field.label}
-                type={field.type}
                 value={field.value}
-                setValueCB={setValue}
                 deleteFieldCB={deleteField}
-              >
-                {(field as DropdownInput).options && (
-                  <OptionsInput
-                    fieldName={field.name}
-                    fieldId={field.id}
-                    setOptionsCB={setOptions}
-                    fieldOptions={(field as DropdownInput).options}
-                  />
-                )}
-              </QuestionInput>
-            );
-          default:
-            return (
-              <React.Fragment key={field.id}>
-                <QuestionInput
-                  id={field.id}
-                  type={field.type}
-                  name={field.name}
-                  label={field.label}
-                  value={field.value}
-                  deleteFieldCB={deleteField}
-                  setValueCB={setValue}
-                />
-                <hr className="my-5 " />
-              </React.Fragment>
-            );
+                setValueCB={setValue}
+              />
+              <hr className="my-5 " />
+            </React.Fragment>
+          );
         }
       })}
 
