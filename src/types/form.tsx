@@ -41,7 +41,7 @@ export interface DropdownInput {
   kind: "dropdown";
   name: string;
   label: string;
-  type: fieldType;
+  type: "select" | "radio" | "multi-select";
   value: string;
   options: string[];
 }
