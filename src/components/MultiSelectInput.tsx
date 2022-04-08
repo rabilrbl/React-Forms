@@ -10,7 +10,7 @@ export default function MultiSelectInput(props: {
 }) {
   const [values, setValues] = React.useState<string[]>(() => {
     const values = props.fieldValue.split(",").map((v) => v.trim());
-    values[0] === "" && values.shift();
+    values[0] === "" && values.shift(); // Necessary because parsing of string to array crates an empty value
     return values;
   });
   // Set first option as default
