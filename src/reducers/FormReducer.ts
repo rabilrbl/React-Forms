@@ -29,6 +29,7 @@ export const FormReducer = (state: formDataType, action: FormAction): formDataTy
                     fields: [
                         ...state.fields,
                         {
+                            kind: "dropdown",
                             id: Math.floor(Math.random() * 1000),
                             name: action.name,
                             label: action.label,
@@ -44,6 +45,7 @@ export const FormReducer = (state: formDataType, action: FormAction): formDataTy
                     fields: [
                         ...state.fields,
                         {
+                            kind: "text",
                             id: Math.floor(Math.random() * 1000),
                             name: action.name,
                             label: action.label,
