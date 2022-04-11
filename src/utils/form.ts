@@ -1,5 +1,5 @@
 import { navigate } from "raviger";
-import { formDataType, formFieldsType, NewForm } from "../types/form";
+import { formDataType, NewForm } from "../types/form";
 import { Fetch } from "./Api";
 
 export const getLocalForms = (): formDataType[] => {

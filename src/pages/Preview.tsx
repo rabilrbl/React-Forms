@@ -89,7 +89,7 @@ export default function Preview(props: { formId: number; fieldId: number }) {
     return () => {
       abortController.abort();
     };
-  }, []);
+  }, [props.fieldId, props.formId]);
 
   useEffect(() => {
     if (isFirst.current) {
@@ -102,7 +102,7 @@ export default function Preview(props: { formId: number; fieldId: number }) {
     } else {
       isFirst.current = true;
     }
-  }, [props.fieldId]);
+  }, [props.fieldId, formData.fields]);
 
   useEffect(() => {
     if (isMount.current) {

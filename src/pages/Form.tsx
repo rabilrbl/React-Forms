@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from "react";
 import Header from "../components/Header";
 import Button from "../components/Button";
 import AddFormField from "../components/AddFormField";
-import { Link, navigate } from "raviger";
+import { Link } from "raviger";
 import QuestionInput from "../components/QuestionInput";
 import { formDataType, formFieldsType } from "../types/form";
 import { getLocalFields, getLocalForms, saveLocalForms } from "../utils/form";
@@ -41,10 +41,12 @@ export default function Form(props: {
   const titleRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    getLocalFields(props.id).then((data) => {
-      dispatch({ type: "SET_STATE", payload: data });
-    }).then(() => setIsLoading(false));
-  }, []);
+    getLocalFields(props.id)
+      .then((data) => {
+        dispatch({ type: "SET_STATE", payload: data });
+      })
+      .then(() => setIsLoading(false));
+  }, [props.id]);
 
   useEffect(() => {
     const oldTitle = document.title;
@@ -67,19 +69,27 @@ export default function Form(props: {
     } else {
       isMounted.current = true;
     }
-  }, [formData]);
+  }, [formData, props.id]);
 
   return (
     <>
       <Header title="WD302 React with Tailwindcss" />
-       {isLoading ? <h2 className="my-5 flex justify-center"><Loading /></h2> :<input
-        className="bg-white border shadow-lg focus:outline-none text-lg font-bold text-sky-600 py-1 px-4 mb-5 focus:ring-2 focus:ring-sky-500 rounded-lg w-full transition duration-200 ease-in-out"
-        type="text"
-        placeholder="Enter title for your form"
-        onChange={(e) => dispatch({ type: "SET_TITLE", title: e.target.value })}
-        value={formData.title}
-        ref={titleRef}
-      />}
+      {isLoading ? (
+        <h2 className="my-5 flex justify-center">
+          <Loading />
+        </h2>
+      ) : (
+        <input
+          className="bg-white border shadow-lg focus:outline-none text-lg font-bold text-sky-600 py-1 px-4 mb-5 focus:ring-2 focus:ring-sky-500 rounded-lg w-full transition duration-200 ease-in-out"
+          type="text"
+          placeholder="Enter title for your form"
+          onChange={(e) =>
+            dispatch({ type: "SET_TITLE", title: e.target.value })
+          }
+          value={formData.title}
+          ref={titleRef}
+        />
+      )}
       {formData.fields.map((field: formFieldsType) => {
         if (field.kind === "DROPDOWN") {
           if (!field.options) {
@@ -95,9 +105,23 @@ export default function Form(props: {
               setValueCB={(id: number, value: string) =>
                 dispatch({ type: "SET_VALUE", id, value })
               }
-              deleteFieldCB={(id: number) =>
-                dispatch({ type: "DELETE_FIELD", id: id, formId: formData.id })
-              }
+              deleteFieldCB={(id: number) => {
+                Fetch(`/forms/${formData.id}/fields/${id}/`, "DELETE").then(
+                  (response) => {
+                    if (response.ok) {
+                      response.json().then((data) => {
+                        alert("Field Deleted");
+                        console.log("Field deleted", data);
+                      });
+                    } else {
+                      throw new Error(
+                        `${response.status} ${response.statusText}`
+                      );
+                    }
+                  }
+                );
+                dispatch({ type: "DELETE_FIELD", id: id, formId: formData.id });
+              }}
             >
               {field.options && (
                 <OptionsInput
@@ -257,9 +281,6 @@ export default function Form(props: {
           Close
         </Link>
       </div>
-      
     </>
-
   );
-};
-
+}

@@ -1,10 +1,10 @@
-import { Link, navigate, useQueryParams } from "raviger";
+import { Link, useQueryParams } from "raviger";
 import { useState, useEffect, useRef } from "react";
 import Button from "../components/Button";
 import Header from "../components/Header";
 import Loading from "../components/Loading";
 import Modal from "../components/Modal";
-import { Form, indexFormsType } from "../types/form";
+import { Form } from "../types/form";
 import { Fetch } from "../utils/Api";
 import { createForm } from "../utils/form";
 
@@ -37,7 +37,7 @@ export default function Home() {
         setForms(data.results);
       })
       .then(() => setIsLoading(false));
-  }, []);
+  }, [offset]);
 
   const deleteForm = (id: number) => {
     setForms(forms.filter((form) => form.id !== id));
@@ -205,7 +205,7 @@ export default function Home() {
       <hr className="my-4" />
       <div className="flex justify-between">
         <button
-          className={"bg-sky-500 text-blue-50 flex px-2 py-1 rounded-lg shadow-lg" + (Number(offset) === 0 ? " opacity-0" : "")}
+          className={"bg-sky-500 text-blue-50 flex px-2 py-1 rounded-lg shadow-lg" + ((Number(offset) === 0 || !offset) ? " opacity-0" : "")}
           title="Previous"
           id="previous"
           onClick={() => {

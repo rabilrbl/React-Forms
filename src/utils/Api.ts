@@ -1,4 +1,4 @@
-import { navigate } from "raviger";
+
 
 export const API_URL = "https://typescriptcourseapi.herokuapp.com/api";
 

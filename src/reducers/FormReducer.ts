@@ -1,6 +1,5 @@
 import { FormAction } from "../actions/FormAction";
 import { formDataType, formFieldsType } from "../types/form";
-import { Fetch } from "../utils/Api";
 
 export const FormReducer = (state: formDataType, action: FormAction): formDataType => {
     switch (action.type) {
