@@ -215,7 +215,7 @@ export default function Home() {
               }&search=${search ? search : ""}`;
             }
           }}
-          disabled={Number(offset) === 0}
+          disabled={Number(offset) === 0 || !offset}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -232,7 +232,7 @@ export default function Home() {
             />
           </svg>&nbsp;Previous
         </button>
-        {paginate.count > 10 && <span>{`Page: ${offset ? Number(offset) / 10 + 1 : 1} of ${Math.ceil(
+        {paginate.count > 5 && <span>{`Page: ${offset ? Number(offset) / 10 + 1 : 1} of ${Math.ceil(
           paginate.count / 10
         )}`}</span>}
         <button
