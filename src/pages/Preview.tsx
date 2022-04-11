@@ -38,9 +38,7 @@ export default function Preview(props: { formId: number; fieldId: number }) {
     fields: [],
   });
 
-  const [field, setField] = React.useState<formFieldsType>();
-  const isMount = React.useRef(false);
-  const isFirst = React.useRef(false);
+  const [field, setField] = React.useState<formFieldsType>(formData.fields[props.fieldId]);
   const [isLoaded, setIsLoaded] = React.useState(false);
   const [formDetails, setFormDetails] = React.useState({
     id: 0,
@@ -54,26 +52,12 @@ export default function Preview(props: { formId: number; fieldId: number }) {
     FetchData(props.formId, abortController.signal)
       .then((data) => {
         dispatch({ type: "SET_STATE", payload: data });
-        if(data.fields.length === 0){
+        if (data.fields.length === 0) {
           alert("No fields found");
           navigate("/");
         }
-        return data;
       })
-      .then((data) => {
-        const field = data.fields[props.fieldId];
-        try {
-          if (!field.value) {
-            field.value = "";
-          }
-        } catch (e: any) {
-          // ignore undefined error
-          if(e.message === "Cannot read property 'value' of undefined"){
-            field.value = "";
-          }
-        }
-        console.log(field);
-        setField(field);
+      .then(() => {
         Fetch(`/forms/${props.formId}/`, "GET")
           .then((response) => response.json())
           .then((data) =>
@@ -89,36 +73,19 @@ export default function Preview(props: { formId: number; fieldId: number }) {
     return () => {
       abortController.abort();
     };
-  }, [props.fieldId, props.formId]);
+  }, [props.formId]);
 
   useEffect(() => {
-    if (isFirst.current) {
-      const field = formData.fields[props.fieldId];
-      if (field.value === null) {
-        field.value = "";
-      }
-      console.log(field);
-      setField(field);
-    } else {
-      isFirst.current = true;
+    if (isLoaded && formData.fields.length > 0) {
+      setField(formData.fields[props.fieldId]);
     }
-  }, [props.fieldId, formData.fields]);
+  }, [isLoaded, props.fieldId, formData.fields]);
 
   useEffect(() => {
-    if (isMount.current) {
-      let timeout = setTimeout(() => {
-        console.log("State Saved at", Date.now());
-      }, 1000);
-      return () => {
-        clearTimeout(timeout);
-      };
-    } else {
-      isMount.current = true;
-    }
-  }, [formData]);
+    dispatch({ type: "SET_VALUE", id: field?.id, value: field?.value });
+  } ,[field?.value, field?.id]);
 
-  const setValue = (id: number, value: string) => {
-    dispatch({ type: "SET_VALUE", id, value });
+  const setValue = (value: string) => {
     field && setField({ ...field, value: value });
   };
 
@@ -212,7 +179,11 @@ export default function Preview(props: { formId: number; fieldId: number }) {
             );
           }}
         >
-          {!isLoaded && <h2 className="my-5 flex justify-center"><Loading /></h2>}
+          {!isLoaded && (
+            <h2 className="my-5 flex justify-center">
+              <Loading />
+            </h2>
+          )}
           {isLoaded && field && renderInput(field)}
           <div className="flex items-center space-x-2 justify-end pt-2 w-[90%]">
             {/* Previous button if previous field exists */}
@@ -242,11 +213,14 @@ export default function Preview(props: { formId: number; fieldId: number }) {
             )}
             {/* Next Button */}
             {field && props.fieldId + 1 < formData.fields.length ? (
-              <Link
-                className="flex justify-end"
-                href={`/preview/${formData.id}/${props.fieldId + 1}`}
+              <button
+                className="flex justify-center items-center bg-blue-500 px-2 py-1 rounded-lg text-blue-50"
+                disabled={!field.value}
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigate(`/preview/${formData.id}/${props.fieldId + 1}`);
+                }}
               >
-                <button className="flex justify-center items-center bg-blue-500 px-2 py-1 rounded-lg text-blue-50">
                   Next&nbsp;
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -262,11 +236,14 @@ export default function Preview(props: { formId: number; fieldId: number }) {
                       d="M13 5l7 7-7 7M5 5l7 7-7 7"
                     />
                   </svg>
-                </button>
-              </Link>
+              </button>
             ) : (
               <div className="flex justify-end">
-                <Button color="bg-blue-500" text="Submit" />
+                <Button
+                  color="bg-blue-500"
+                  text="Submit"
+                  disabled={!field?.value}
+                />
               </div>
             )}
           </div>

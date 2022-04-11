@@ -4,7 +4,7 @@ export default function TextAreaInput(props:{
     fieldId: number;
     fieldValue: string;
     fieldLabel: string;
-    setValueCB: (id: number, value: string) => void;
+    setValueCB: (value: string) => void;
 }) {
     return (
         <div>
@@ -17,7 +17,7 @@ export default function TextAreaInput(props:{
                 id={props.fieldId.toString()}
                 value={props.fieldValue}
                 onChange={(e) => {
-                    props.setValueCB(props.fieldId, e.target.value);
+                    props.setValueCB(e.target.value);
                 }}
             />
         </div>

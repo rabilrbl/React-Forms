@@ -18,7 +18,7 @@ export default function AddFormField(props: {
       />
       <div className="relative">
         <select
-          className="bg-white pr-6 focus:outline-none border border-gray-300 rounded-lg py-1 px-4 block w-50 max-w-fit leading-normal text-gray-700"
+          className="bg-white pr-6 focus:outline-none border border-gray-300 rounded-lg py-1 px-2 block w-fit leading-normal text-gray-700"
           name="facility"
           value={props.FieldType}
           onChange={(e) => props.setFieldTypeCB(e.target.value as fieldType)}

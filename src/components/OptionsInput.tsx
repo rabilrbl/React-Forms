@@ -22,15 +22,14 @@ export default function OptionsInput(props: {
           console.log(err);
         });
         console.log("Options Saved at", Date.now());
-        props.setOptionsCB(props.fieldId, fieldOptions);
-      }, 1000);
+      }, 500);
       return () => {
         clearTimeout(timeout);
       };
     } else {
       isMount.current = true;
     }
-  }, [fieldOptions]);
+  }, [fieldOptions, props.fieldId, props.formId]);
   return (
     <div>
       <label>
@@ -69,7 +68,9 @@ export default function OptionsInput(props: {
             );
           })}
         </ul>
-        <div className="flex flex-row items-center w-[70%]">
+        <div className="flex flex-row items-center w-[70%]" onInput={() => {
+          props.setOptionsCB(props.fieldId, fieldOptions);
+        }}>
           <input
             className="bg-white border focus:outline-none py-1 w-full px-4 focus:ring-2 focus:ring-sky-500 rounded-lg text-gray-800 transition duration-200 ease-in-out"
             type="text"

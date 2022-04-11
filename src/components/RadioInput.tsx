@@ -5,7 +5,7 @@ export default function RadioInput(props: {
   fieldValue: string;
   fieldOptions?: string[];
   fieldLabel: string;
-  setValueCB: (id: number, value: string) => void;
+  setValueCB: (value: string) => void;
 }) {
   return (
     <div>
@@ -23,10 +23,10 @@ export default function RadioInput(props: {
                   value={value}
                   checked={props.fieldValue === value}
                   onChange={(e) => {
-                    props.setValueCB(props.fieldId, e.target.value);
+                    props.setValueCB(e.target.value);
                   }}
                 />
-                {value}
+                &nbsp;{value}
               </label>
             );
           })}

@@ -5,7 +5,7 @@ export interface FormInputProps {
   label: string;
   id: number;
   value: string;
-  setValueCB: (id: number, value: string) => void;
+  setValueCB: (value: string) => void;
   children?: React.ReactNode;
   deleteFieldCB?: (id: number) => void;
 }
@@ -18,7 +18,7 @@ export default function FormInput(props: FormInputProps) {
         type={props.type}
         className="py-2 px-4 border border-sky-200 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded-lg w-[90%] text-sky-800 transition duration-200 ease-in-out"
         value={props.value}
-        onChange={(e) => props.setValueCB(props.id, e.target.value)}
+        onChange={(e) => props.setValueCB(e.target.value)}
       />
       {props.deleteFieldCB && <button
         onClick={() => {

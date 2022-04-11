@@ -178,7 +178,11 @@ export default function Home() {
                       className="bg-red-600 p-1 rounded-lg shadow-lg"
                       title="Delete"
                       onClick={() => {
-                        deleteForm(form.id);
+                        Fetch(`/forms/${form.id}/`, "DELETE").then((response) => {
+                          if(response.ok) {
+                            deleteForm(form.id);
+                          }
+                        })
                       }}
                     >
                       <svg
@@ -205,17 +209,17 @@ export default function Home() {
       <hr className="my-4" />
       <div className="flex justify-between">
         <button
-          className={"bg-sky-500 text-blue-50 flex px-2 py-1 rounded-lg shadow-lg" + ((Number(offset) === 0 || !offset) ? " opacity-0" : "")}
+          className={"bg-sky-500 text-blue-50 flex px-2 py-1 rounded-lg shadow-lg" + (!paginate.previous ? " opacity-0" : "")}
           title="Previous"
           id="previous"
           onClick={() => {
-            if (offset && Number(offset) !== 0) {
+            if (paginate.previous) {
               window.location.href = `?offset=${
                 offset ? Number(offset) - 10 : ""
               }&search=${search ? search : ""}`;
             }
           }}
-          disabled={Number(offset) === 0 || !offset}
+          disabled={!paginate.previous}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -236,16 +240,17 @@ export default function Home() {
           paginate.count / 10
         )}`}</span>}
         <button
-          className={"bg-sky-500 text-blue-50 flex px-2 py-1 rounded-lg shadow-lg"+ (!(paginate.count <= 10) ? "" : " opacity-0")}
+          className={"bg-sky-500 text-blue-50 flex px-2 py-1 rounded-lg shadow-lg"+ (paginate.next ? "" : " opacity-0")}
           title="Next"
           id="next"
           onClick={() => {
-            if (!(forms.length < 10)) {
+            if (paginate.next) {
               window.location.href = `?offset=${
                 offset ? Number(offset) + 10 : 10
               }&search=${search ? search : ""}`;
             }
           }}
+          disabled={!paginate.next}
         >
           Next&nbsp;<svg
             xmlns="http://www.w3.org/2000/svg"

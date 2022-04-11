@@ -43,6 +43,10 @@ export default function Form(props: {
   useEffect(() => {
     getLocalFields(props.id)
       .then((data) => {
+        data.fields = data.fields.map((f) => {
+          f.kind === "DROPDOWN" && (!f.options) && (f.options = []);
+          return f;
+        })
         dispatch({ type: "SET_STATE", payload: data });
       })
       .then(() => setIsLoading(false));
@@ -92,9 +96,6 @@ export default function Form(props: {
       )}
       {formData.fields.map((field: formFieldsType) => {
         if (field.kind === "DROPDOWN") {
-          if (!field.options) {
-            field.options = [];
-          }
           return (
             <QuestionInput
               key={field.id}
@@ -172,6 +173,7 @@ export default function Form(props: {
             </React.Fragment>
           );
         }
+        return null;
       })}
 
       <div className="relative px-2">
@@ -202,6 +204,7 @@ export default function Form(props: {
                   Fetch(`/forms/${formData.id}/fields/`, "POST", {
                     label: field.name,
                     kind: kind,
+                    value: "",
                     meta: {
                       type: field.type,
                     },

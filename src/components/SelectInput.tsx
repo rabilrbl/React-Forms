@@ -5,7 +5,7 @@ export default function SelectInput(props: {
   fieldValue: string;
   fieldOptions?: string[];
   fieldLabel: string;
-  setValueCB: (id: number, value: string) => void;
+  setValueCB: (value: string) => void;
 }) {
   return (
     <div>
@@ -18,7 +18,7 @@ export default function SelectInput(props: {
         id={props.fieldId.toString()}
         value={props.fieldValue}
         onChange={(e) => {
-          props.setValueCB(props.fieldId, e.target.value);
+          props.setValueCB(e.target.value);
         }}
       >
         {props.fieldOptions &&

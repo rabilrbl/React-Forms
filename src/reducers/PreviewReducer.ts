@@ -13,6 +13,7 @@ export const PreviewReducer = (state: formDataType, action: PreviewAction) => {
                 fields: [
                   ...state.fields.map((field) => {
                     if (field.id === action.id) {
+                      console.log(action.value);
                       return { ...field, value: action.value };
                     }
                     return field;
