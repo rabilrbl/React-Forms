@@ -232,9 +232,9 @@ export default function Home() {
             />
           </svg>&nbsp;Previous
         </button>
-        <span>{`Page: ${offset ? Number(offset) / 10 + 1 : 1} of ${Math.ceil(
+        {paginate.count > 10 && <span>{`Page: ${offset ? Number(offset) / 10 + 1 : 1} of ${Math.ceil(
           paginate.count / 10
-        )}`}</span>
+        )}`}</span>}
         <button
           className={"bg-sky-500 text-blue-50 flex px-2 py-1 rounded-lg shadow-lg"+ (!(forms.length < 10) ? "" : " opacity-0")}
           title="Next"
