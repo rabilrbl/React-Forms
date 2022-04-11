@@ -29,21 +29,32 @@ export type fieldType =
 
 type TextInput = {
   id: number;
-  kind: "text";
-  name: string;
+  kind: "TEXT";
   label: string;
-  type: fieldType;
+  meta:{
+    type: fieldType;
+  }
   value: string;
 };
 
 export interface DropdownInput {
   id: number;
-  kind: "dropdown";
-  name: string;
+  kind: "DROPDOWN";
   label: string;
-  type: "select" | "radio" | "multi-select";
+  meta: {
+    type: "select" | "radio" | "multi-select";
+  }
   value: string;
   options: string[];
 }
 
 export type formFieldsType = DropdownInput | TextInput;
+
+export interface Form {
+  id: number;
+  title: string;
+  description?: string;
+  is_public?: boolean;
+}
+
+export type NewForm = Omit<Form, "id">;

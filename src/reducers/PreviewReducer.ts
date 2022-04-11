@@ -3,6 +3,10 @@ import { formDataType } from "../types/form"
 
 export const PreviewReducer = (state: formDataType, action: PreviewAction) => {
     switch (action.type) {
+      case "SET_STATE":
+        return {
+          ...action.payload
+      };
         case "SET_VALUE":
             return {
                 ...state,

@@ -2,7 +2,6 @@ import React from "react";
 
 export default function SelectInput(props: {
   fieldId: number;
-  fieldName: string;
   fieldValue: string;
   fieldOptions?: string[];
   fieldLabel: string;
@@ -10,14 +9,13 @@ export default function SelectInput(props: {
 }) {
   return (
     <div>
-      <label className="text-lg font-semibold" htmlFor={props.fieldName}>
+      <label className="text-lg font-semibold" htmlFor={props.fieldId.toString()}>
         {props.fieldLabel}
       </label>
       <br />
       <select
         className="w-[50%] min-w-fit border border-blue-500 px-2 py-1 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
         id={props.fieldId.toString()}
-        name={props.fieldName}
         value={props.fieldValue}
         onChange={(e) => {
           props.setValueCB(props.fieldId, e.target.value);

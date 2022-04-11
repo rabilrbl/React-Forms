@@ -2,36 +2,50 @@ import { Link, useQueryParams } from "raviger";
 import { useState, useEffect, useRef } from "react";
 import Button from "../components/Button";
 import Header from "../components/Header";
-import { getLocalForms, saveLocalForms } from "../utils/form";
-import { defaultFields } from "./Form";
+import Loading from "../components/Loading";
+import Modal from "../components/Modal";
+import { Form } from "../types/form";
+import { Fetch } from "../utils/Api";
+import { createForm } from "../utils/form";
 
 export default function Home() {
-  const [forms, setForms] = useState(getLocalForms());
+  const [forms, setForms] = useState<Form[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [newForm, setNewForms] = useState<Omit<Form, "id">>({
+    title: "Untitled",
+    description: "",
+    is_public: true,
+  });
+  const [open, setOpen] = useState(false);
   const isMounted = useRef(false);
+
+  useEffect(() => {
+    Fetch("/forms/")
+      .then((response) => response.json())
+      .then((data) => setForms(data.results)).then(() => setIsLoading(false));
+  }, []);
 
   const deleteForm = (id: number) => {
     setForms(forms.filter((form) => form.id !== id));
   };
 
-  const createForm = () => {
-    const newForm = {
-      id: Date.now(),
-      title: "Untitled Form",
-      fields: defaultFields,
-    };
-    setForms([...forms, newForm]);
-    document.location.href = `/form/${newForm.id}`;
-  };
+  useEffect(() => {
+    if (!isMounted.current) {
+      isMounted.current = true;
+    } else {
+      setTitleError(newForm.title.length < 1 || newForm.title.length > 100);
+    }
+  }, [newForm.title]);
 
   useEffect(() => {
     if (isMounted.current) {
-      saveLocalForms(forms);
+      // saveLocalForms(forms);
       console.log("Form Saved at", Date.now());
     } else {
       isMounted.current = true;
     }
   }, [forms]);
-
+  const [titleError, setTitleError] = useState(false);
   const [{ search }, setQueryParams] = useQueryParams();
   const [searchState, setSearchState] = useState("");
   return (
@@ -64,16 +78,16 @@ export default function Home() {
           color="bg-sky-500"
           text="+ Add Form"
           onClick={() => {
-            createForm();
+            setOpen(true);
           }}
           hoverColor="bg-red-800"
           size="px-3 py-2"
         />
       </div>
 
-      <p>Available Forms</p>
-
+        {isLoading && <h2 className="my-5 flex justify-center"><Loading /></h2>}
       {forms.length > 0 ? (
+        
         forms
           .filter((form) => {
             if (search) {
@@ -83,6 +97,7 @@ export default function Home() {
           })
           .map((form, index) => {
             return (
+              
               <div
                 className="flex flex-row items-center border-2 px-4 py-2 my-3 rounded-lg shadow-lg"
                 key={form.id}
@@ -171,8 +186,77 @@ export default function Home() {
             );
           })
       ) : (
-        <h3>No Forms Available</h3>
+        !isLoading && <h3>No Forms Available</h3>
       )}
+      <Modal open={open} setOpen={setOpen}>
+        <div className="flex flex-col space-y-5">
+          <h1 className="text-2xl text-center">Create Form</h1>
+          <div className="flex flex-col">
+            <label htmlFor="title">Title:&nbsp;</label>
+            <input
+              className="w-full px-2 py-1 border rounded-lg drop-shadow focus:outline-none focus:ring-2 focus:ring-sky-500"
+              type="text"
+              name="title"
+              // value={newForm.title}
+              onChange={(e) => {
+                setNewForms({ ...newForm, title: e.target.value });
+              }}
+            />
+            {titleError && (
+              <span className="text-red-500">
+                Title should be atleast 1 character and max of 100 characters.
+              </span>
+            )}
+          </div>
+          <div className="flex flex-col">
+            <label htmlFor="description">Description:&nbsp;</label>
+            <textarea
+              className="w-full px-2 py-1 border rounded-lg drop-shadow focus:outline-none focus:ring-2 focus:ring-sky-500"
+              name="description"
+              // value={newForm.description}
+              onChange={(e) => {
+                setNewForms({ ...newForm, description: e.target.value });
+              }}
+            />
+          </div>
+          <div className="flex flex-col">
+            <label htmlFor="is_public">Is Public:&nbsp;</label>
+            {/* Checkbox */}
+            <div className="flex flex-row items-center">
+              <input
+                className="mr-2 h-6 w-6 rounded-full"
+                type="checkbox"
+                checked={newForm.is_public}
+                name="is_public"
+                onChange={(e) => {
+                  setNewForms({ ...newForm, is_public: e.target.checked });
+                }}
+              />
+              <span className="text-sm">
+                &nbsp;
+                <span className="text-gray-600">
+                  Check this box if you want your form to be public.
+                </span>
+              </span>
+            </div>
+            <div className="flex flex-row items-center mt-5 w-full">
+              <button
+                type="button"
+                className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+                onClick={() => {
+                  if (!titleError) {
+                    createForm(newForm, setNewForms);
+                  } else {
+                    alert("Please fix the errors before submitting.");
+                  }
+                }}
+              >
+                Create
+              </button>
+            </div>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 }

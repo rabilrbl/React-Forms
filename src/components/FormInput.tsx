@@ -2,7 +2,6 @@ import React from "react";
 
 export interface FormInputProps {
   type: string;
-  name: string;
   label: string;
   id: number;
   value: string;
@@ -14,11 +13,10 @@ export interface FormInputProps {
 export default function FormInput(props: FormInputProps) {
   return (
     <div className="relative my-2 mx-1 flex flex-col" key={props.id}>
-      <label htmlFor={props.name}>{props.label}</label>
+      <label htmlFor={props.id.toString()}>{props.label}</label>
       <input
         type={props.type}
         className="py-2 px-4 border border-sky-200 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded-lg w-[90%] text-sky-800 transition duration-200 ease-in-out"
-        name={props.name}
         value={props.value}
         onChange={(e) => props.setValueCB(props.id, e.target.value)}
       />

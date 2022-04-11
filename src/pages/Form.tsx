@@ -9,58 +9,8 @@ import { getLocalFields, getLocalForms, saveLocalForms } from "../utils/form";
 import OptionsInput from "../components/OptionsInput";
 import { FormReducer } from "../reducers/FormReducer";
 import { FieldReducer } from "../reducers/FieldReducer";
-
-export const defaultFields: formFieldsType[] = [
-  {
-    kind: "text",
-    id: 1,
-    name: "firstName",
-    label: "First Name",
-    type: "text",
-    value: "",
-  },
-  {
-    kind: "text",
-    id: 2,
-    name: "lastName",
-    label: "Last Name",
-    type: "text",
-    value: "",
-  },
-  {
-    kind: "text",
-    id: 3,
-    name: "email",
-    label: "Email",
-    type: "email",
-    value: "",
-  },
-  {
-    kind: "text",
-    id: 4,
-    name: "phone",
-    label: "Phone Number",
-    type: "tel",
-    value: "",
-  },
-  {
-    kind: "text",
-    id: 5,
-    name: "dateOfBirth",
-    label: "Date Of Birth",
-    type: "date",
-    value: "",
-  },
-  {
-    kind: "dropdown",
-    id: 6,
-    name: "Dropdown",
-    label: "Dropdown",
-    type: "select",
-    value: "",
-    options: ["Option 1", "Option 2", "Option 3"],
-  },
-];
+import { Fetch } from "../utils/Api";
+import Loading from "../components/Loading";
 
 export const setLocalFields = (formData: formDataType): void => {
   const localForms = getLocalForms();
@@ -75,22 +25,26 @@ export default function Form(props: {
   method: string;
   id: number;
 }) {
-  const [formData, dispatch] = React.useReducer(
-    FormReducer,
-    {
-      id: 0,
-      fields: [],
-      title: "",
-    },
-    () => getLocalFields(props.id)
-  );
+  const [formData, dispatch] = React.useReducer(FormReducer, {
+    id: 0,
+    title: "",
+    fields: [],
+  });
   const [field, fieldDispatch] = React.useReducer(FieldReducer, {
     name: "",
     addForm: false,
     type: "text",
   });
+  const isMounted = useRef(false);
+  const [isLoading, setIsLoading] = React.useState(true);
 
   const titleRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    getLocalFields(props.id).then((data) => {
+      dispatch({ type: "SET_STATE", payload: data });
+    }).then(() => setIsLoading(false));
+  }, []);
 
   useEffect(() => {
     const oldTitle = document.title;
@@ -102,74 +56,90 @@ export default function Form(props: {
   }, []);
 
   useEffect(() => {
-    let timeout = setTimeout(() => {
-      setLocalFields(formData);
-      console.log("State Saved at", Date.now());
-    }, 1000);
-    return () => {
-      clearTimeout(timeout);
-    };
-  }, [formData]);
-
-  useEffect(() => {
-    if (formData.id === 0) {
-      alert("No form found with id " + formData.id);
-      navigate("/");
+    if (isMounted.current) {
+      let timeout = setTimeout(() => {
+        Fetch(`/forms/${props.id}/`, "PUT", formData);
+        console.log("State Saved at", Date.now());
+      }, 1000);
+      return () => {
+        clearTimeout(timeout);
+      };
+    } else {
+      isMounted.current = true;
     }
-  }, [formData.id]);
+  }, [formData]);
 
   return (
     <>
       <Header title="WD302 React with Tailwindcss" />
-      <input
-        className="bg-white focus:outline-none py-1 px-4 focus:ring-2 focus:ring-sky-500 rounded-lg w-full text-gray-800 transition duration-200 ease-in-out"
+       {isLoading ? <h2 className="my-5 flex justify-center"><Loading /></h2> :<input
+        className="bg-white border shadow-lg focus:outline-none text-lg font-bold text-sky-600 py-1 px-4 mb-5 focus:ring-2 focus:ring-sky-500 rounded-lg w-full transition duration-200 ease-in-out"
         type="text"
         placeholder="Enter title for your form"
         onChange={(e) => dispatch({ type: "SET_TITLE", title: e.target.value })}
         value={formData.title}
         ref={titleRef}
-      />
+      />}
       {formData.fields.map((field: formFieldsType) => {
-        if (field.kind === "dropdown") {
+        if (field.kind === "DROPDOWN") {
+          if (!field.options) {
+            field.options = [];
+          }
           return (
             <QuestionInput
               key={field.id}
               id={field.id}
-              name={field.name}
               label={field.label}
-              type={field.type}
+              type={field.meta.type}
               value={field.value}
               setValueCB={(id: number, value: string) =>
                 dispatch({ type: "SET_VALUE", id, value })
               }
               deleteFieldCB={(id: number) =>
-                dispatch({ type: "DELETE_FIELD", id })
+                dispatch({ type: "DELETE_FIELD", id: id, formId: formData.id })
               }
             >
               {field.options && (
                 <OptionsInput
-                  fieldName={field.name}
                   fieldId={field.id}
                   setOptionsCB={(id: number, options: string[]) =>
                     dispatch({ type: "SET_OPTIONS", id, options })
                   }
+                  formId={formData.id}
                   fieldOptions={field.options}
                 />
               )}
             </QuestionInput>
           );
-        } else if (field.kind === "text") {
+        } else if (field.kind === "TEXT") {
           return (
             <React.Fragment key={field.id}>
               <QuestionInput
                 id={field.id}
-                type={field.type}
-                name={field.name}
+                type={field.meta.type ? field.meta.type : "text"}
                 label={field.label}
                 value={field.value}
-                deleteFieldCB={(id: number) =>
-                  dispatch({ type: "DELETE_FIELD", id: id })
-                }
+                deleteFieldCB={(id: number) => {
+                  Fetch(`/forms/${formData.id}/fields/${id}/`, "DELETE").then(
+                    (response) => {
+                      if (response.ok) {
+                        response.json().then((data) => {
+                          alert("Field Deleted");
+                          console.log("Field deleted", data);
+                        });
+                      } else {
+                        throw new Error(
+                          `${response.status} ${response.statusText}`
+                        );
+                      }
+                    }
+                  );
+                  dispatch({
+                    type: "DELETE_FIELD",
+                    id: id,
+                    formId: formData.id,
+                  });
+                }}
                 setValueCB={(id, value) =>
                   dispatch({ type: "SET_VALUE", id: id, value: value })
                 }
@@ -199,12 +169,35 @@ export default function Form(props: {
                 color="bg-blue-500"
                 text="Add"
                 onClick={() => {
-                  const name = field.name ? field.name : "New Field";
-                  dispatch({
-                    type: "ADD_FIELD",
-                    name: name.replace(" ", ""),
-                    label: name,
-                    formType: field.type,
+                  const kind =
+                    field.type === "select" ||
+                    field.type === "multi-select" ||
+                    field.type === "radio"
+                      ? "DROPDOWN"
+                      : "TEXT";
+                  Fetch(`/forms/${formData.id}/fields/`, "POST", {
+                    label: field.name,
+                    kind: kind,
+                    meta: {
+                      type: field.type,
+                    },
+                  }).then((response) => {
+                    if (response.ok) {
+                      response.json().then((data) => {
+                        console.log("Field added", data);
+                        dispatch({
+                          type: "ADD_FIELD",
+                          label: data.label,
+                          formType: data.meta.type,
+                          formId: formData.id,
+                          id: data.id,
+                        });
+                      });
+                    } else {
+                      throw new Error(
+                        `${response.status} ${response.statusText}`
+                      );
+                    }
                   });
                   fieldDispatch({ type: "SET_NAME", name: "" });
                   fieldDispatch({ type: "TOGGLE_ADD" });
@@ -264,6 +257,9 @@ export default function Form(props: {
           Close
         </Link>
       </div>
+      
     </>
+
   );
-}
+};
+

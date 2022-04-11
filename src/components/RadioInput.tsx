@@ -2,7 +2,6 @@ import React from "react";
 
 export default function RadioInput(props: {
   fieldId: number;
-  fieldName: string;
   fieldValue: string;
   fieldOptions?: string[];
   fieldLabel: string;
@@ -10,7 +9,7 @@ export default function RadioInput(props: {
 }) {
   return (
     <div>
-      <label className="text-lg font-semibold" htmlFor={props.fieldName}>
+      <label className="text-lg font-semibold" htmlFor={props.fieldId.toString()}>
         {props.fieldLabel}
       </label>
       <br />
@@ -21,7 +20,6 @@ export default function RadioInput(props: {
               <label key={index}>
                 <input
                   type="radio"
-                  name={props.fieldName}
                   value={value}
                   checked={props.fieldValue === value}
                   onChange={(e) => {

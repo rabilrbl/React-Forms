@@ -1,19 +1,26 @@
 import React from "react";
+import { Fetch } from "../utils/Api";
 
 export default function OptionsInput(props: {
-  fieldName: string;
   fieldId: number;
   setOptionsCB: (id: number, options: string[]) => void;
   fieldOptions: string[];
+  formId: number;
 }) {
   const [addOption, setAddOption] = React.useState<string>("");
   const [fieldOptions, setFieldOptions] = React.useState<string[]>(
     props.fieldOptions
   );
   const isMount = React.useRef(false);
+  
   React.useEffect(() => {
     if (isMount.current) {
       const timeout = setTimeout(() => {
+        Fetch(`/forms/${props.formId}/fields/${props.fieldId}/`, "PATCH", {
+          options: fieldOptions,
+        }).catch((err) => {
+          console.log(err);
+        });
         console.log("Options Saved at", Date.now());
         props.setOptionsCB(props.fieldId, fieldOptions);
       }, 1000);
@@ -27,7 +34,7 @@ export default function OptionsInput(props: {
   return (
     <div>
       <label>
-        Options for {props.fieldName}
+        Options for above field
         <ul className="flex flex-col list-disc ml-10">
           {fieldOptions.map((option, index) => {
             return (

@@ -1,8 +1,13 @@
 import { FormAction } from "../actions/FormAction";
 import { formDataType, formFieldsType } from "../types/form";
+import { Fetch } from "../utils/Api";
 
 export const FormReducer = (state: formDataType, action: FormAction): formDataType => {
     switch (action.type) {
+        case "SET_STATE":
+            return {
+                ...action.payload
+            };
         case "SET_TITLE":
             return {
                 ...state,
@@ -29,11 +34,10 @@ export const FormReducer = (state: formDataType, action: FormAction): formDataTy
                     fields: [
                         ...state.fields,
                         {
-                            kind: "dropdown",
-                            id: Math.floor(Math.random() * 1000),
-                            name: action.name,
+                            kind: "DROPDOWN",
+                            id: action.id,
                             label: action.label,
-                            type: action.formType,
+                            meta: {type: action.formType},
                             value: "",
                             options: [],
                         },
@@ -45,11 +49,10 @@ export const FormReducer = (state: formDataType, action: FormAction): formDataTy
                     fields: [
                         ...state.fields,
                         {
-                            kind: "text",
+                            kind: "TEXT",
                             id: Math.floor(Math.random() * 1000),
-                            name: action.name,
                             label: action.label,
-                            type: action.formType,
+                            meta: {type: action.formType},
                             value: "",
                         },
                     ],

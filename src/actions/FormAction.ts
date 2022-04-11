@@ -1,9 +1,14 @@
-import { fieldType } from "../types/form";
+import { fieldType, formDataType } from "../types/form";
 
 type SetValueAction = {
     type: "SET_VALUE";
     id: number;
     value: string;
+}
+
+export type SetStateAction = {
+    type: "SET_STATE";
+    payload: formDataType;
 }
 
 type SetTitleAction = {
@@ -19,13 +24,15 @@ type SetOptionsAction = {
 
 type AddFieldAction = {
     type: "ADD_FIELD";
-    name: string;
     label: string;
     formType: fieldType;
+    formId: number;
+    id: number;
 }
 
 type DeleteFieldAction = {
     type: "DELETE_FIELD";
+    formId: number;
     id: number;
 }
 
@@ -33,4 +40,4 @@ type ClearFieldsAction = {
     type: "CLEAR_FIELDS";
 }
 
-export type FormAction = SetValueAction | SetOptionsAction | AddFieldAction | DeleteFieldAction | SetTitleAction | ClearFieldsAction;
+export type FormAction = SetValueAction | SetOptionsAction | AddFieldAction | DeleteFieldAction | SetTitleAction | ClearFieldsAction | SetStateAction;

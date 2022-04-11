@@ -1,52 +1,113 @@
-import { navigate, Link } from "raviger";
+import { Link, navigate } from "raviger";
 import React, { useEffect } from "react";
 import Button from "../components/Button";
 import FormInput from "../components/FormInput";
 import Header from "../components/Header";
+import Loading from "../components/Loading";
 import MultiSelectInput from "../components/MultiSelectInput";
 import RadioInput from "../components/RadioInput";
 import SelectInput from "../components/SelectInput";
 import TextAreaInput from "../components/TextAreaInput";
 import { PreviewReducer } from "../reducers/PreviewReducer";
-import { formFieldsType } from "../types/form";
-import { getLocalFields } from "../utils/form";
+import { formDataType, formFieldsType } from "../types/form";
+import { Fetch } from "../utils/Api";
+
+const FetchData = async (formId: number, signal: AbortSignal) => {
+  const response = await Fetch(
+    `/forms/${formId}/fields/`,
+    "GET",
+    undefined,
+    signal
+  );
+  if (!response.ok) {
+    throw new Error(response.statusText);
+  }
+  const jsonData = await response.json();
+  const fields: formFieldsType[] = await jsonData.results;
+  return {
+    id: formId,
+    title: "",
+    fields: fields,
+  } as formDataType;
+};
 
 export default function Preview(props: { formId: number; fieldId: number }) {
-  const [formData, dispatch] = React.useReducer(
-    PreviewReducer,
-    {
-      id: 0,
-      fields: [],
-      title: "",
-    },
-    () => getLocalFields(props.formId)
-  );
+  const [formData, dispatch] = React.useReducer(PreviewReducer, {
+    id: 0,
+    title: "",
+    fields: [],
+  });
 
-  const field = formData.fields[props.fieldId];
+  const [field, setField] = React.useState<formFieldsType>();
   const isMount = React.useRef(false);
+  const isFirst = React.useRef(false);
+  const [isLoaded, setIsLoaded] = React.useState(false);
+  const [formDetails, setFormDetails] = React.useState({
+    id: 0,
+    title: "",
+    description: "",
+    is_public: false,
+  });
 
   useEffect(() => {
-    if (formData.id === 0) {
-      alert("Not Found!");
-      navigate("/");
-    } else if (formData.fields.length === 0) {
-      alert("No fields found!");
-      navigate("/");
+    const abortController = new AbortController();
+    FetchData(props.formId, abortController.signal)
+      .then((data) => {
+        dispatch({ type: "SET_STATE", payload: data });
+        if(data.fields.length === 0){
+          alert("No fields found");
+          navigate("/");
+        }
+        return data;
+      })
+      .then((data) => {
+        const field = data.fields[props.fieldId];
+        try {
+          if (!field.value) {
+            field.value = "";
+          }
+        } catch (e: any) {
+          // ignore undefined error
+          if(e.message === "Cannot read property 'value' of undefined"){
+            field.value = "";
+          }
+        }
+        console.log(field);
+        setField(field);
+        Fetch(`/forms/${props.formId}/`, "GET")
+          .then((response) => response.json())
+          .then((data) =>
+            setFormDetails({
+              id: data.id,
+              title: data.title,
+              description: data.description,
+              is_public: data.is_public,
+            })
+          );
+      })
+      .then(() => setIsLoaded(true));
+    return () => {
+      abortController.abort();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (isFirst.current) {
+      const field = formData.fields[props.fieldId];
+      if (field.value === null) {
+        field.value = "";
+      }
+      console.log(field);
+      setField(field);
+    } else {
+      isFirst.current = true;
     }
-  });
+  }, [props.fieldId]);
 
   useEffect(() => {
     if (isMount.current) {
       let timeout = setTimeout(() => {
-        const localSubs = localStorage.getItem("userSubs");
-        const userSubs = JSON.parse(localSubs ? localSubs : "[]");
-        if (userSubs) {
-          // localStorage.setItem(
-          //   "userSubs",
-          //   JSON.stringify([...userSubs, formData])
-          // );
-          console.log("State Saved at", Date.now());
-        }
+        console.log("State Saved at", Date.now());
       }, 1000);
       return () => {
         clearTimeout(timeout);
@@ -58,16 +119,16 @@ export default function Preview(props: { formId: number; fieldId: number }) {
 
   const setValue = (id: number, value: string) => {
     dispatch({ type: "SET_VALUE", id, value });
+    field && setField({ ...field, value: value });
   };
 
   const renderInput = (field: formFieldsType) => {
-    if (field.kind === "text") {
-      switch (field.type) {
+    if (field.kind === "TEXT") {
+      switch (field.meta.type) {
         case "textarea":
           return (
             <TextAreaInput
               fieldId={field.id}
-              fieldName={field.name}
               fieldValue={field.value}
               fieldLabel={field.label}
               setValueCB={setValue}
@@ -78,21 +139,19 @@ export default function Preview(props: { formId: number; fieldId: number }) {
           return (
             <FormInput
               id={field.id}
-              type={field.type}
-              name={field.name}
+              type={field.meta.type}
               label={field.label}
               value={field.value}
               setValueCB={setValue}
             />
           );
       }
-    } else if (field.kind === "dropdown") {
-      switch (field.type) {
+    } else if (field.kind === "DROPDOWN") {
+      switch (field.meta.type) {
         case "select":
           return (
             <SelectInput
               fieldId={field.id}
-              fieldName={field.name}
               fieldValue={field.value}
               fieldOptions={field.options}
               fieldLabel={field.label}
@@ -103,7 +162,6 @@ export default function Preview(props: { formId: number; fieldId: number }) {
           return (
             <RadioInput
               fieldId={field.id}
-              fieldName={field.name}
               fieldValue={field.value}
               fieldOptions={field.options}
               fieldLabel={field.label}
@@ -114,7 +172,6 @@ export default function Preview(props: { formId: number; fieldId: number }) {
           return (
             <MultiSelectInput
               fieldId={field.id}
-              fieldName={field.name}
               fieldValue={field.value}
               fieldOptions={field.options}
               fieldLabel={field.label}
@@ -128,16 +185,35 @@ export default function Preview(props: { formId: number; fieldId: number }) {
   return (
     <>
       <Header title="Quiz" />
-      <h3> {formData.title}</h3>
+      <h3> {formDetails.title}</h3>
       <hr className="my-3" />
       <div>
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            alert("Submitted " + formData.title);
+            const body = {
+              answers: formData.fields.map((field) => {
+                return {
+                  form_field: field.id,
+                  value: field.value,
+                };
+              }),
+              form: formDetails,
+            };
+            console.log(body);
+            Fetch(`/forms/${formData.id}/submission/`, "POST", body).then(
+              (response) => {
+                if (response.ok) {
+                  alert("Submitted " + formDetails.title);
+                } else {
+                  alert("Error submitting form");
+                }
+              }
+            );
           }}
         >
-          {renderInput(field)}
+          {!isLoaded && <h2 className="my-5 flex justify-center"><Loading /></h2>}
+          {isLoaded && field && renderInput(field)}
           <div className="flex items-center space-x-2 justify-end pt-2 w-[90%]">
             {/* Previous button if previous field exists */}
             {props.fieldId > 0 && (

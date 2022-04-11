@@ -2,7 +2,6 @@ import React from "react";
 
 export default function MultiSelectInput(props: {
   fieldId: number;
-  fieldName: string;
   fieldValue: string;
   fieldOptions?: string[];
   fieldLabel: string;
@@ -35,7 +34,7 @@ export default function MultiSelectInput(props: {
   }, [values]);
   return (
     <div>
-      <label className="text-lg font-semibold" htmlFor={props.fieldName}>
+      <label className="text-lg font-semibold" htmlFor={props.fieldId.toString()}>
         {props.fieldLabel}
       </label>
       <br />
