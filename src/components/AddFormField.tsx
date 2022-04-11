@@ -8,9 +8,9 @@ export default function AddFormField(props: {
   setFieldTypeCB: (FieldType: fieldType) => void;
 }) {
   return (
-    <div className="flex w-full my-4">
+    <div className="flex flex-col sm:flex-row sm:w-full my-4 w-screen">
       <input
-        className="bg-white border focus:outline-none py-1 px-4 focus:ring-2 focus:ring-sky-500 rounded-lg w-full text-gray-800 transition duration-200 ease-in-out"
+        className="bg-white border focus:outline-none py-1 px-4 focus:ring-2 focus:ring-sky-500 rounded-lg sm:w-full text-gray-800 transition duration-200 ease-in-out"
         type="text"
         placeholder="Question?"
         onChange={(e) => props.setFieldNameCB(e.target.value)}
