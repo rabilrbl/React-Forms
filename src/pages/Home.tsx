@@ -236,7 +236,7 @@ export default function Home() {
           paginate.count / 10
         )}`}</span>}
         <button
-          className={"bg-sky-500 text-blue-50 flex px-2 py-1 rounded-lg shadow-lg"+ (!(forms.length <= 10) ? "" : " opacity-0")}
+          className={"bg-sky-500 text-blue-50 flex px-2 py-1 rounded-lg shadow-lg"+ (!(paginate.count <= 10) ? "" : " opacity-0")}
           title="Next"
           id="next"
           onClick={() => {
