@@ -22,7 +22,8 @@ export default function Home() {
   useEffect(() => {
     Fetch("/forms/")
       .then((response) => response.json())
-      .then((data) => setForms(data.results)).then(() => setIsLoading(false));
+      .then((data) => setForms(data.results))
+      .then(() => setIsLoading(false));
   }, []);
 
   const deleteForm = (id: number) => {
@@ -85,28 +86,30 @@ export default function Home() {
         />
       </div>
 
-        {isLoading && <h2 className="my-5 flex justify-center"><Loading /></h2>}
-      {forms.length > 0 ? (
-        
-        forms
-          .filter((form) => {
-            if (search) {
-              return form.title.toLowerCase().includes(search.toLowerCase());
-            }
-            return true;
-          })
-          .map((form, index) => {
-            return (
-              
-              <div
-                className="flex flex-row items-center border-2 px-4 py-2 my-3 rounded-lg shadow-lg"
-                key={form.id}
-              >
-                <strong>
-                  {index + 1}. {form.title}
-                </strong>
-                <div className="ml-auto order-1 mr-2 space-x-5">
-                  {/* <Button
+      {isLoading && (
+        <h2 className="my-5 flex justify-center">
+          <Loading />
+        </h2>
+      )}
+      {forms.length > 0
+        ? forms
+            .filter((form) => {
+              if (search) {
+                return form.title.toLowerCase().includes(search.toLowerCase());
+              }
+              return true;
+            })
+            .map((form, index) => {
+              return (
+                <div
+                  className="flex flex-row items-center border-2 px-4 py-2 my-3 rounded-lg shadow-lg"
+                  key={form.id}
+                >
+                  <strong>
+                    {index + 1}. {form.title}
+                  </strong>
+                  <div className="ml-auto order-1 mr-2 space-x-5">
+                    {/* <Button
                   color="bg-blue-500"
                   text="Open"
                   onClick={() => {
@@ -115,14 +118,60 @@ export default function Home() {
                   hoverColor="bg-red-800"
                   size="px-2 py-1"
                 /> */}
-                  <Link className="" href={`/form/${form.id}`}>
+                    <Link className="" href={`/form/${form.id}`}>
+                      <button
+                        className="bg-blue-600 text-blue-50 p-1 rounded-lg shadow-lg"
+                        title="Open Form"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-6 w-6"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                          />
+                        </svg>
+                      </button>
+                    </Link>
+
+                    <Link className="" href={`/preview/${form.id}/0`}>
+                      <button
+                        className="bg-indigo-600 text-blue-50 p-1 rounded-lg shadow-lg"
+                        title="Preview"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-6 w-6"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"
+                          />
+                        </svg>
+                      </button>
+                    </Link>
+
                     <button
-                      className="bg-blue-600 text-blue-50 p-1 rounded-lg shadow-lg"
-                      title="Open Form"
+                      className="bg-red-600 p-1 rounded-lg shadow-lg"
+                      title="Delete"
+                      onClick={() => {
+                        deleteForm(form.id);
+                      }}
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
-                        className="h-6 w-6"
+                        className="h-6 w-6 text-blue-50"
                         fill="none"
                         viewBox="0 0 24 24"
                         stroke="currentColor"
@@ -131,70 +180,22 @@ export default function Home() {
                         <path
                           strokeLinecap="round"
                           strokeLinejoin="round"
-                          d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
                         />
                       </svg>
                     </button>
-                  </Link>
-
-                  <Link className="" href={`/preview/${form.id}/0`}>
-                    <button
-                      className="bg-indigo-600 text-blue-50 p-1 rounded-lg shadow-lg"
-                      title="Preview"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-6 w-6"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"
-                        />
-                      </svg>
-                    </button>
-                  </Link>
-
-                  <button
-                    className="bg-red-600 p-1 rounded-lg shadow-lg"
-                    title="Delete"
-                    onClick={() => {
-                      deleteForm(form.id);
-                    }}
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-6 w-6 text-blue-50"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                      />
-                    </svg>
-                  </button>
+                  </div>
                 </div>
-              </div>
-            );
-          })
-      ) : (
-        !isLoading && <h3>No Forms Available</h3>
-      )}
+              );
+            })
+        : !isLoading && <h3>No Forms Available</h3>}
       <Modal open={open} setOpen={setOpen}>
         <div className="flex flex-col space-y-5">
           <h1 className="text-2xl text-center">Create Form</h1>
           <div className="flex flex-col">
             <label htmlFor="title">Title:&nbsp;</label>
             <input
-              className="w-full px-2 py-1 border rounded-lg drop-shadow focus:outline-none focus:ring-2 focus:ring-sky-500"
+              className="w-full px-2 py-1 border rounded-lg border-gray-300 shadow-lg  focus:outline-none focus:ring-2 focus:ring-sky-500"
               type="text"
               name="title"
               // value={newForm.title}
@@ -211,7 +212,7 @@ export default function Home() {
           <div className="flex flex-col">
             <label htmlFor="description">Description:&nbsp;</label>
             <textarea
-              className="w-full px-2 py-1 border rounded-lg drop-shadow focus:outline-none focus:ring-2 focus:ring-sky-500"
+              className="w-full px-2 py-1 border border-gray-300 rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-sky-500"
               name="description"
               // value={newForm.description}
               onChange={(e) => {
@@ -224,7 +225,7 @@ export default function Home() {
             {/* Checkbox */}
             <div className="flex flex-row items-center">
               <input
-                className="mr-2 h-6 w-6 rounded-full"
+                className="mr-2 h-6 w-6 rounded-lg"
                 type="checkbox"
                 checked={newForm.is_public}
                 name="is_public"
@@ -233,16 +234,15 @@ export default function Home() {
                 }}
               />
               <span className="text-sm">
-                &nbsp;
                 <span className="text-gray-600">
                   Check this box if you want your form to be public.
                 </span>
               </span>
             </div>
-            <div className="flex flex-row items-center mt-5 w-full">
+            <div className="mt-4">
               <button
-                type="button"
-                className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+                type="submit"
+                className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-sky-600 hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500"
                 onClick={() => {
                   if (!titleError) {
                     createForm(newForm, setNewForms);
@@ -251,7 +251,7 @@ export default function Home() {
                   }
                 }}
               >
-                Create
+                Create Form
               </button>
             </div>
           </div>
