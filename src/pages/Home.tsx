@@ -1,15 +1,20 @@
-import { Link, useQueryParams } from "raviger";
+import { Link, navigate, useQueryParams } from "raviger";
 import { useState, useEffect, useRef } from "react";
 import Button from "../components/Button";
 import Header from "../components/Header";
 import Loading from "../components/Loading";
 import Modal from "../components/Modal";
-import { Form } from "../types/form";
+import { Form, indexFormsType } from "../types/form";
 import { Fetch } from "../utils/Api";
 import { createForm } from "../utils/form";
 
 export default function Home() {
   const [forms, setForms] = useState<Form[]>([]);
+  const [paginate, setPaginate] = useState({
+    count: 0,
+    next: "",
+    previous: "",
+  });
   const [isLoading, setIsLoading] = useState(true);
   const [newForm, setNewForms] = useState<Omit<Form, "id">>({
     title: "Untitled",
@@ -18,11 +23,19 @@ export default function Home() {
   });
   const [open, setOpen] = useState(false);
   const isMounted = useRef(false);
+  const [{ search, offset }, setQueryParams] = useQueryParams();
 
   useEffect(() => {
-    Fetch("/forms/")
+    Fetch(`/forms/?limit=10&offset=${offset}`)
       .then((response) => response.json())
-      .then((data) => setForms(data.results))
+      .then((data) => {
+        setPaginate({
+          count: data.count,
+          next: data.next,
+          previous: data.previous,
+        });
+        setForms(data.results);
+      })
       .then(() => setIsLoading(false));
   }, []);
 
@@ -47,7 +60,6 @@ export default function Home() {
     }
   }, [forms]);
   const [titleError, setTitleError] = useState(false);
-  const [{ search }, setQueryParams] = useQueryParams();
   const [searchState, setSearchState] = useState("");
   return (
     <div className="border border-sky-200 px-4 py-2 rounded">
@@ -56,7 +68,7 @@ export default function Home() {
         className="flex flex-col"
         onSubmit={(e) => {
           e.preventDefault();
-          setQueryParams({ search: searchState || "" });
+          setQueryParams({ offset, search: searchState || "" });
         }}
       >
         <div className="flex flex-row items-center mb-4">
@@ -189,6 +201,69 @@ export default function Home() {
               );
             })
         : !isLoading && <h3>No Forms Available</h3>}
+      {/* Next and previous buttons */}
+      <hr className="my-4" />
+      <div className="flex justify-between">
+        <button
+          className={"bg-sky-500 text-blue-50 flex px-2 py-1 rounded-lg shadow-lg" + (Number(offset) === 0 ? " opacity-0" : "")}
+          title="Previous"
+          id="previous"
+          onClick={() => {
+            if (offset && Number(offset) !== 0) {
+              window.location.href = `?offset=${
+                offset ? Number(offset) - 10 : ""
+              }&search=${search ? search : ""}`;
+            }
+          }}
+          disabled={Number(offset) === 0}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={2}
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M11 19l-7-7 7-7m8 14l-7-7 7-7"
+            />
+          </svg>&nbsp;Previous
+        </button>
+        <span>{`Page: ${offset ? Number(offset) / 10 + 1 : 1} of ${Math.ceil(
+          paginate.count / 10
+        )}`}</span>
+        <button
+          className={"bg-sky-500 text-blue-50 flex px-2 py-1 rounded-lg shadow-lg"+ (!(forms.length < 10) ? "" : " opacity-0")}
+          title="Next"
+          id="next"
+          onClick={() => {
+            if (!(forms.length < 10)) {
+              window.location.href = `?offset=${
+                offset ? Number(offset) + 10 : 10
+              }&search=${search ? search : ""}`;
+            }
+          }}
+          disabled={forms.length < 10}
+        >
+          Next&nbsp;<svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={2}
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M13 5l7 7-7 7M5 5l7 7-7 7"
+            />
+          </svg>
+        </button>
+      </div>
       <Modal open={open} setOpen={setOpen}>
         <div className="flex flex-col space-y-5">
           <h1 className="text-2xl text-center">Create Form</h1>
@@ -198,7 +273,7 @@ export default function Home() {
               className="w-full px-2 py-1 border rounded-lg border-gray-300 shadow-lg  focus:outline-none focus:ring-2 focus:ring-sky-500"
               type="text"
               name="title"
-              // value={newForm.title}
+              value={newForm.title}
               onChange={(e) => {
                 setNewForms({ ...newForm, title: e.target.value });
               }}

@@ -58,3 +58,22 @@ export interface Form {
 }
 
 export type NewForm = Omit<Form, "id">;
+
+export interface formResult<t> {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: t[];
+}
+
+export interface formRawType {
+  id: number;
+  title: string;
+  description: string;
+  is_public: boolean;
+  created_by: number;
+  created_data: string;
+  modified_date: string;
+}
+
+export type indexFormsType = formResult<formRawType>
