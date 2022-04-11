@@ -15,7 +15,7 @@ export const Signup = () => {
   }, []);
   return (
     <div>
-      <h1>Login</h1>
+      <h1>Signup</h1>
       <hr className="my-4" />
       <form
         className="w-full space-y-3"
