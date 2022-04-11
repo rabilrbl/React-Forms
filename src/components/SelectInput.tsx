@@ -21,6 +21,7 @@ export default function SelectInput(props: {
           props.setValueCB(e.target.value);
         }}
       >
+        <option value="">Select</option>
         {props.fieldOptions &&
           props.fieldOptions.map((value, index) => {
             return (
