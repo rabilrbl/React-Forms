@@ -268,14 +268,14 @@ export default function Form(props: {
               Add field
             </button>
           )}
-          {/* <span
+          <button
             className="text-gray-700 hover:underline cursor-pointer font-medium"
             onClick={() => {
               dispatch({ type: "CLEAR_FIELDS" });
             }}
           >
             Clear fields
-          </span> */}
+          </button>
         </div>
       </div>
       <hr className="my-3 " />
