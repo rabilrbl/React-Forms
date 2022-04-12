@@ -41,6 +41,7 @@ export default function Form(props: {
   const titleRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
+    const timeout = setTimeout(() => {
     getLocalFields(props.id)
       .then((data) => {
         data.fields = data.fields.map((f) => {
@@ -50,6 +51,10 @@ export default function Form(props: {
         dispatch({ type: "SET_STATE", payload: data });
       })
       .then(() => setIsLoading(false));
+    },  500)
+    return () => {
+      clearTimeout(timeout);
+    }
   }, [props.id]);
 
   useEffect(() => {

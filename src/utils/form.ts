@@ -37,7 +37,7 @@ export const createForm = (formData: NewForm, CB:({title}:{title:string})=>void)
       console.log("Form created", data);
       navigate(`/form/${data.id}`);
     })
-      CB({title:""});
+      CB({...formData, title:"Untitled"});
     }
   }).catch((error) => {
     
