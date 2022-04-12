@@ -12,9 +12,12 @@ export default function MultiSelectInput(props: {
     values[0] === "" && values.shift(); // Necessary because parsing of string to array crates an empty value
     return values;
   });
+  const divRef = React.createRef<HTMLDivElement>();
 
+  React.useEffect(() => {
+    divRef.current?.focus();
+  } ,[props]);
   const [listOpen, setListOpen] = React.useState<boolean>(false);
-  
   return (
     <div>
       <label className="text-lg font-semibold" htmlFor={props.fieldId.toString()}>
@@ -28,6 +31,14 @@ export default function MultiSelectInput(props: {
           onClick={() => {
             setListOpen(!listOpen);
           }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              setListOpen(!listOpen);
+            }
+          }}
+          tabIndex={0}
+          ref={divRef}
         >
           <div className="w-full h-full flex space-x-2 flex-wrap bg-gray-100">
             {values.length === 0 && <span>Select choices</span>}

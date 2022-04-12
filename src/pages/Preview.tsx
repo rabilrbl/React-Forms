@@ -38,7 +38,9 @@ export default function Preview(props: { formId: number; fieldId: number }) {
     fields: [],
   });
 
-  const [field, setField] = React.useState<formFieldsType>(formData.fields[props.fieldId]);
+  const [field, setField] = React.useState<formFieldsType>(
+    formData.fields[props.fieldId]
+  );
   const [isLoaded, setIsLoaded] = React.useState(false);
   const [formDetails, setFormDetails] = React.useState({
     id: 0,
@@ -83,7 +85,7 @@ export default function Preview(props: { formId: number; fieldId: number }) {
 
   useEffect(() => {
     dispatch({ type: "SET_VALUE", id: field?.id, value: field?.value });
-  } ,[field?.value, field?.id]);
+  }, [field?.value, field?.id]);
 
   const setValue = (value: string) => {
     field && setField({ ...field, value: value });
@@ -173,7 +175,7 @@ export default function Preview(props: { formId: number; fieldId: number }) {
                 if (response.ok) {
                   alert("Submitted " + formDetails.title);
                 } else {
-                  alert("Error submitting form");
+                  alert("Error submitting form!. Make sure no field is empty!");
                 }
               }
             );
@@ -188,11 +190,12 @@ export default function Preview(props: { formId: number; fieldId: number }) {
           <div className="flex items-center space-x-2 justify-end pt-2 w-[90%]">
             {/* Previous button if previous field exists */}
             {props.fieldId > 0 && (
-              <Link
-                className="flex justify-start"
-                href={`/preview/${props.formId}/${props.fieldId - 1}`}
+              <button className="flex justify-center items-center bg-blue-500 px-2 py-1 rounded-lg text-blue-50"
+              onClick={(e) => {
+                e.preventDefault();
+                navigate(`/preview/${props.formId}/${props.fieldId - 1}`);
+              }}
               >
-                <button className="flex justify-center items-center bg-blue-500 px-2 py-1 rounded-lg text-blue-50">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="h-4 w-4"
@@ -208,8 +211,7 @@ export default function Preview(props: { formId: number; fieldId: number }) {
                     />
                   </svg>
                   &nbsp;Previous
-                </button>
-              </Link>
+              </button>
             )}
             {/* Next Button */}
             {field && props.fieldId + 1 < formData.fields.length ? (
@@ -221,21 +223,21 @@ export default function Preview(props: { formId: number; fieldId: number }) {
                   navigate(`/preview/${formData.id}/${props.fieldId + 1}`);
                 }}
               >
-                  Next&nbsp;
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-4 w-4"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth={2}
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M13 5l7 7-7 7M5 5l7 7-7 7"
-                    />
-                  </svg>
+                Next&nbsp;
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-4 w-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M13 5l7 7-7 7M5 5l7 7-7 7"
+                  />
+                </svg>
               </button>
             ) : (
               <div className="flex justify-end">

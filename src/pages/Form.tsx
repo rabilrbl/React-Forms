@@ -80,6 +80,43 @@ export default function Form(props: {
     }
   }, [formData, props.id]);
 
+  const addFieldCB = () => {
+      const kind =
+        field.type === "select" ||
+        field.type === "multi-select" ||
+        field.type === "radio"
+          ? "DROPDOWN"
+          : "TEXT";
+      Fetch(`/forms/${formData.id}/fields/`, "POST", {
+        label: field.name,
+        kind: kind,
+        value: "",
+        meta: {
+          type: field.type,
+        },
+      }).then((response) => {
+        if (response.ok) {
+          response.json().then((data) => {
+            console.log("Field added", data);
+            dispatch({
+              type: "ADD_FIELD",
+              label: data.label,
+              formType: data.meta.type,
+              formId: formData.id,
+              id: data.id,
+            });
+          });
+        } else {
+          throw new Error(
+            `${response.status} ${response.statusText}`
+          );
+        }
+      });
+      fieldDispatch({ type: "SET_NAME", name: "" });
+      fieldDispatch({ type: "TOGGLE_ADD" });
+    }
+  
+
   return (
     <>
       <Header title="WD302 React with Tailwindcss" />
@@ -183,7 +220,12 @@ export default function Form(props: {
 
       <div className="relative px-2">
         {field.addForm && (
-          <div id="formField" className="rounded-xl">
+          <div onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+              addFieldCB();
+            }
+          }} id="formField" className="rounded-xl">
             <div className="flex items-center space-x-2">
               <AddFormField
                 fieldName={field.name}
@@ -200,41 +242,7 @@ export default function Form(props: {
                 color="bg-blue-500"
                 text="Add"
                 disabled={!field.name}
-                onClick={() => {
-                  const kind =
-                    field.type === "select" ||
-                    field.type === "multi-select" ||
-                    field.type === "radio"
-                      ? "DROPDOWN"
-                      : "TEXT";
-                  Fetch(`/forms/${formData.id}/fields/`, "POST", {
-                    label: field.name,
-                    kind: kind,
-                    value: "",
-                    meta: {
-                      type: field.type,
-                    },
-                  }).then((response) => {
-                    if (response.ok) {
-                      response.json().then((data) => {
-                        console.log("Field added", data);
-                        dispatch({
-                          type: "ADD_FIELD",
-                          label: data.label,
-                          formType: data.meta.type,
-                          formId: formData.id,
-                          id: data.id,
-                        });
-                      });
-                    } else {
-                      throw new Error(
-                        `${response.status} ${response.statusText}`
-                      );
-                    }
-                  });
-                  fieldDispatch({ type: "SET_NAME", name: "" });
-                  fieldDispatch({ type: "TOGGLE_ADD" });
-                }}
+                onClick={addFieldCB}
                 hoverColor="bg-red-800"
               />
 

@@ -11,6 +11,12 @@ export interface FormInputProps {
 }
 
 export default function FormInput(props: FormInputProps) {
+  const inputRef = React.createRef<HTMLInputElement>();
+
+  React.useEffect(() => {
+    inputRef.current?.focus();
+  } ,[props]);
+
   return (
     <div className="relative my-2 mx-1 flex flex-col" key={props.id}>
       <label htmlFor={props.id.toString()}>{props.label}</label>
@@ -19,6 +25,7 @@ export default function FormInput(props: FormInputProps) {
         className="py-2 px-4 border border-sky-200 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded-lg w-[90%] text-sky-800 transition duration-200 ease-in-out"
         value={props.value}
         onChange={(e) => props.setValueCB(e.target.value)}
+        ref={inputRef}
       />
       {props.deleteFieldCB && <button
         onClick={() => {
