@@ -208,14 +208,7 @@ export default function Home() {
                                   setForms(
                                     forms.filter((f) => form.id !== f.id)
                                   );
-                                  Fetch(`/forms/?limit=10`)
-                                    .then((response) => response.json())
-                                    .then((data) => {
-                                      setPaginate({
-                                        ...paginate,
-                                        count: data.count
-                                      });
-                                    });
+                                  window.location.reload();
                                 }
                               }
                             );
