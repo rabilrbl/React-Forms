@@ -9,7 +9,10 @@ export default function RadioInput(props: {
 }) {
   return (
     <div>
-      <label className="text-lg font-semibold" htmlFor={props.fieldId.toString()}>
+      <label
+        className="text-lg font-semibold"
+        htmlFor={props.fieldId.toString()}
+      >
         {props.fieldLabel}
       </label>
       <br />

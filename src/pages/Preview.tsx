@@ -1,4 +1,4 @@
-import { Link, navigate } from "raviger";
+import { navigate } from "raviger";
 import React, { useEffect } from "react";
 import Button from "../components/Button";
 import FormInput from "../components/FormInput";
@@ -190,27 +190,28 @@ export default function Preview(props: { formId: number; fieldId: number }) {
           <div className="flex items-center space-x-2 justify-end pt-2 w-[90%]">
             {/* Previous button if previous field exists */}
             {props.fieldId > 0 && (
-              <button className="flex justify-center items-center bg-blue-500 px-2 py-1 rounded-lg text-blue-50"
-              onClick={(e) => {
-                e.preventDefault();
-                navigate(`/preview/${props.formId}/${props.fieldId - 1}`);
-              }}
+              <button
+                className="flex justify-center items-center bg-blue-500 px-2 py-1 rounded-lg text-blue-50"
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigate(`/preview/${props.formId}/${props.fieldId - 1}`);
+                }}
               >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-4 w-4"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth={2}
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M11 19l-7-7 7-7m8 14l-7-7 7-7"
-                    />
-                  </svg>
-                  &nbsp;Previous
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-4 w-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M11 19l-7-7 7-7m8 14l-7-7 7-7"
+                  />
+                </svg>
+                &nbsp;Previous
               </button>
             )}
             {/* Next Button */}

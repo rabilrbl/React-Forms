@@ -10,10 +10,13 @@ export default function SelectInput(props: {
   const selectRef = React.createRef<HTMLSelectElement>();
   React.useEffect(() => {
     selectRef.current?.focus();
-  }, [props])
+  }, [props, selectRef]);
   return (
     <div>
-      <label className="text-lg font-semibold" htmlFor={props.fieldId.toString()}>
+      <label
+        className="text-lg font-semibold"
+        htmlFor={props.fieldId.toString()}
+      >
         {props.fieldLabel}
       </label>
       <br />
