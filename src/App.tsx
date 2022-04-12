@@ -11,6 +11,7 @@ import Preview from "./pages/Preview";
 import { Login } from "./pages/Login";
 import { Logout } from "./pages/Logout";
 import { Signup } from "./pages/Signup";
+import NotFound from "./pages/NotFound";
 
 const routes = {
   "/": () => <Home />,
@@ -67,7 +68,7 @@ function App() {
         <Block>
           {/* Navbar */}
           <NavBar navLinks={navLinks} />
-          {route}
+          {route || <NotFound />}
         </Block>
       </AppContainer>
     </div>
