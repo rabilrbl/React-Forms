@@ -6,6 +6,10 @@ export default function TextAreaInput(props:{
     fieldLabel: string;
     setValueCB: (value: string) => void;
 }) {
+    const inputRef = React.createRef<HTMLTextAreaElement>();
+    React.useEffect(() => {
+        inputRef.current?.focus();
+    }, [props]);
     return (
         <div>
             <label className="text-lg font-semibold" htmlFor={props.fieldId.toString()}>
@@ -19,6 +23,7 @@ export default function TextAreaInput(props:{
                 onChange={(e) => {
                     props.setValueCB(e.target.value);
                 }}
+                ref={inputRef}
             />
         </div>
     );

@@ -7,6 +7,10 @@ export default function SelectInput(props: {
   fieldLabel: string;
   setValueCB: (value: string) => void;
 }) {
+  const selectRef = React.createRef<HTMLSelectElement>();
+  React.useEffect(() => {
+    selectRef.current?.focus();
+  }, [props])
   return (
     <div>
       <label className="text-lg font-semibold" htmlFor={props.fieldId.toString()}>
@@ -20,6 +24,7 @@ export default function SelectInput(props: {
         onChange={(e) => {
           props.setValueCB(e.target.value);
         }}
+        ref={selectRef}
       >
         <option value="">Select</option>
         {props.fieldOptions &&
