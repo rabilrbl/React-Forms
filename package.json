@@ -16,6 +16,7 @@
     "@types/react-dom": "^17.0.13",
     "@types/react-infinite-scroller": "^1.2.3",
     "autoprefixer": "^10.4.2",
+    "eslint": "^8.13.0",
     "headlessui": "^0.0.0",
     "postcss": "^8.4.7",
     "raviger": "^4.0.0",
