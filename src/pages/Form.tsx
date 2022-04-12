@@ -199,6 +199,7 @@ export default function Form(props: {
                 size="py-1 px-4"
                 color="bg-blue-500"
                 text="Add"
+                disabled={!field.name}
                 onClick={() => {
                   const kind =
                     field.type === "select" ||
@@ -267,14 +268,14 @@ export default function Form(props: {
               Add field
             </button>
           )}
-          <span
+          {/* <span
             className="text-gray-700 hover:underline cursor-pointer font-medium"
             onClick={() => {
               dispatch({ type: "CLEAR_FIELDS" });
             }}
           >
             Clear fields
-          </span>
+          </span> */}
         </div>
       </div>
       <hr className="my-3 " />
