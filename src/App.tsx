@@ -11,6 +11,7 @@ import { Logout } from "./pages/Logout";
 import { Signup } from "./pages/Signup";
 import NotFound from "./pages/NotFound";
 import Loading from "./components/Loading";
+import { Offline, Online } from "react-detect-offline";
 
 const Home = React.lazy(() => import("./pages/Home"));
 const Form = React.lazy(() => import("./pages/Form"));
@@ -75,8 +76,16 @@ function App() {
       <AppContainer>
         <Block>
           {/* Navbar */}
-          <NavBar navLinks={navLinks} />
-          {route || <NotFound />}
+          <Online>
+            <NavBar navLinks={navLinks} />
+            {route || <NotFound />}
+          </Online>
+          <Offline>
+            <div className="p-2 sm:p-10">
+              <h1>Your Offline</h1>
+              <h3>Check your network connection.</h3>
+            </div>
+          </Offline>
         </Block>
       </AppContainer>
     </div>

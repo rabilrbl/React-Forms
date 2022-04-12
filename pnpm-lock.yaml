@@ -11,6 +11,7 @@ specifiers:
   '@types/jest': ^27.4.1
   '@types/node': ^16.11.26
   '@types/react': ^17.0.39
+  '@types/react-detect-offline': ^2.4.1
   '@types/react-dom': ^17.0.13
   '@types/react-infinite-scroller': ^1.2.3
   autoprefixer: ^10.4.2
@@ -19,6 +20,7 @@ specifiers:
   postcss: ^8.4.7
   raviger: ^4.0.0
   react: ^17.0.2
+  react-detect-offline: ^2.4.5
   react-dom: ^17.0.2
   react-infinite-scroller: ^1.2.5
   react-scripts: 5.0.0
@@ -49,6 +51,7 @@ dependencies:
   '@types/jest': 27.4.1
   '@types/node': 16.11.26
   '@types/react': 17.0.39
+  '@types/react-detect-offline': 2.4.1
   '@types/react-dom': 17.0.13
   '@types/react-infinite-scroller': 1.2.3
   autoprefixer: 10.4.2_postcss@8.4.7
@@ -57,6 +60,7 @@ dependencies:
   postcss: 8.4.7
   raviger: 4.0.0_react@17.0.2
   react: 17.0.2
+  react-detect-offline: 2.4.5
   react-dom: 17.0.2_react@17.0.2
   react-infinite-scroller: 1.2.5_react@17.0.2
   react-scripts: 5.0.0_d6d4be9bc5e21444469c50dac1badcb4
@@ -2381,6 +2385,12 @@ packages:
 
   /@types/range-parser/1.2.4:
     resolution: {integrity: sha512-EEhsLsD6UsDM1yFhAvy0Cjr6VwmpMWqFBCb9w07wVugF7w9nfajxLuVmngTIpgS6svCnm6Vaw+MZhoDCKnOfsw==}
+    dev: false
+
+  /@types/react-detect-offline/2.4.1:
+    resolution: {integrity: sha512-ympSl07fvDbu7+EsnhrKwDWkdOqHp22lukhJYIHxnTfSIzOh1T/K9NGmpwKUtgJaNCfllwLvMSXBlyC6nHEObw==}
+    dependencies:
+      '@types/react': 17.0.39
     dev: false
 
   /@types/react-dom/17.0.13:
@@ -7890,6 +7900,10 @@ packages:
       raf: 3.4.1
       regenerator-runtime: 0.13.9
       whatwg-fetch: 3.6.2
+    dev: false
+
+  /react-detect-offline/2.4.5:
+    resolution: {integrity: sha512-sI13NPEKl3uQp95FT5CwrYzH3DnXCwNP6TnY6NRF5gFDM4NU9KDlbtA6HG2dwhDVS0RYQGXwZW/mHbdf8fCnaw==}
     dev: false
 
   /react-dev-utils/12.0.0_05fdc9690754132164a52b942bb9d95d:
